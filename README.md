@@ -1,4 +1,5 @@
-# `<prism-highlight>` Syntax highlighting via Prism
+
+`<prism-highlight>` Syntax highlighting via Prism
 
 ### Example
 ```
@@ -18,3 +19,10 @@ Custom property | Description | Default
 `--prism-highlight` | Mixin applied to the element | `{}`
 `--prism-highlight-code` | Mixin applied to the `<pre>` element | `{}`
 `--prism-highlight-mark` | Background color for the `<mark>` element when using custom search | `--paper-orange-500`
+
+
+
+### Events
+| Name | Description | Params |
+| --- | --- | --- |
+| link | Fired when the user clicked on a link. | url **String** - Clicked url |
