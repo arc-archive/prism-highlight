@@ -2,9 +2,13 @@
   "name": "prism-highlight",
   "description": "Syntax highlighting via Prism",
   "author": "The Advanced REST Client authors",
+  "license": "Apache-2.0 OR CC-BY-4.0",
   "keywords": [
     "web-components",
-    "polymer"
+    "polymer",
+    "prism",
+    "highlighting",
+    "syntax"
   ],
   "private": true,
   "main": [
