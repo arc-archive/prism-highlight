@@ -1,3 +1,17 @@
+<a name="2.0.1"></a>
+## [2.0.1](https://github.com/advanced-rest-client/prism-highlight/compare/1.0.2...v2.0.1) (2017-01-04)
+
+
+### Breaking
+
+* Many changes in the API, rewritted element to be ES5 complant ([c848423bc9a82f4c339a8eadcc8ddb1c5dd8f875](https://github.com/advanced-rest-client/prism-highlight/commit/c848423bc9a82f4c339a8eadcc8ddb1c5dd8f875))
+
+### Update
+
+* Added new Travis configuration ([f392e99826d34daf9649aea94476a31cd31b07dd](https://github.com/advanced-rest-client/prism-highlight/commit/f392e99826d34daf9649aea94476a31cd31b07dd))
+
+
+
 <a name="1.0.2"></a>
 ## [1.0.2](https://github.com/advanced-rest-client/prism-highlight/compare/1.0.1...v1.0.2) (2016-09-11)
 
