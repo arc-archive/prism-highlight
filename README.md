@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/advanced-rest-client/prism-highlight.svg?branch=master)](https://travis-ci.org/advanced-rest-client/prism-highlight)  
+
+# prism-highlight
 
 `<prism-highlight>` Syntax highlighting via Prism
 
@@ -11,6 +14,22 @@
 
 The `lang` attribute is required and the component will not start parsing data without it.
 
+Changing the `lang` and `code` properties together, do it in less than 10 ms.
+The element is set to commit changes after this persiod. Otherwise it may display
+old and new code due to the asynchronius nature of the code highligter.
+
+*Note** This element uses web workers with dependencies. It expect to find
+workers files in current directory in the `workers` folder.
+Your build process has to ensure that this files will be avaiable.
+
+Also this element expects the prism scripts to be available in the same
+root folder as this element is (like bower_components).
+
+### Required scripts
+- ../prism/prism.js
+- ../prism/plugins/autolinker/prism-autolinker.min.js
+- ../prism/components/*
+
 ### Styling
 `<prism-highlight>` provides the following custom properties and mixins for styling:
 
@@ -18,11 +37,11 @@ Custom property | Description | Default
 ----------------|-------------|----------
 `--prism-highlight` | Mixin applied to the element | `{}`
 `--prism-highlight-code` | Mixin applied to the `<pre>` element | `{}`
-`--prism-highlight-mark` | Background color for the `<mark>` element when using custom search | `--paper-orange-500`
+`--prism-highlight-mark-selected` | Background color for the `<mark>` element when using custom search | `#ff9632`
 
 
 
 ### Events
 | Name | Description | Params |
 | --- | --- | --- |
-| link | Fired when the user clicked on a link. | url **String** - Clicked url |
+| url-change-action | An event fired when the user clicked on any link in the response panels or the headers | url **String** - An url value |
