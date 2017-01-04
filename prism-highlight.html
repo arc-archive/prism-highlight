@@ -11,11 +11,12 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 -->
-<script src="../prism/prism.js" data-manual=""></script>
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-progress/paper-progress.html">
 <link rel="import" href="../paper-styles/paper-styles.html">
+<link rel="import" href="../error-message/error-message.html">
+<link rel="import" href="prism-import.html">
 <link rel="import" href="prism-styles.html">
 <!--
 `<prism-highlight>` Syntax highlighting via Prism
@@ -30,6 +31,22 @@ the License.
 
 The `lang` attribute is required and the component will not start parsing data without it.
 
+Changing the `lang` and `code` properties together, do it in less than 10 ms.
+The element is set to commit changes after this persiod. Otherwise it may display
+old and new code due to the asynchronius nature of the code highligter.
+
+**Note** This element uses web workers with dependencies. It expect to find
+workers files in current directory in the `workers` folder.
+Your build process has to ensure that this files will be avaiable.
+
+Also this element expects the prism scripts to be available in the same
+root folder as this element is (like bower_components).
+
+### Required scripts
+- ../prism/prism.js
+- ../prism/plugins/autolinker/prism-autolinker.min.js
+- ../prism/components/*
+
 ### Styling
 `<prism-highlight>` provides the following custom properties and mixins for styling:
 
@@ -37,7 +54,7 @@ Custom property | Description | Default
 ----------------|-------------|----------
 `--prism-highlight` | Mixin applied to the element | `{}`
 `--prism-highlight-code` | Mixin applied to the `<pre>` element | `{}`
-`--prism-highlight-mark` | Background color for the `<mark>` element when using custom search | `--paper-orange-500`
+`--prism-highlight-mark-selected` | Background color for the `<mark>` element when using custom search | `#ff9632`
 
 @group UI Elements
 @element prism-highlight
@@ -46,7 +63,7 @@ Custom property | Description | Default
 <dom-module id="prism-highlight">
   <template>
     <style include="prism-styles">
-    :host {
+     :host {
       display: block;
       @apply(--prism-highlight);
     }
@@ -62,7 +79,7 @@ Custom property | Description | Default
     }
 
     .arc-search-mark.selected {
-      background-color: var(--prism-highlight-mark, --paper-orange-500);
+      background-color: var(--prism-highlight-mark-selected, #ff9632);
     }
     </style>
     <pre class="parsed-content"><code id="output" class="language-" on-tap="_handleLinks"></code></pre>
@@ -76,116 +93,133 @@ Custom property | Description | Default
   (function() {
     'use strict';
 
-    var _path;
-    if (window.currentImport && window.currentImport.URL) {
-      let url = window.currentImport.URL;
-      let path = url.substr(url.indexOf('/', url.indexOf('/') + 2))
-        .replace('prism-highlight.html', '');
-      let lastDot = path.lastIndexOf('.');
-      if (lastDot !== -1 && path.substr(lastDot + 1) === 'html') {
-        // remove element file name path
-        path = path.substr(0, path.lastIndexOf('/') + 1);
-      }
-      _path = path;
-    }
-    const importLocation = _path;
-    _path = undefined;
-
-    class PrismHighlight {
-      beforeRegister() {
-        this.is = 'prism-highlight';
-        /**
-         * Fired when the user clicked on a link.
-         *
-         * @event link
-         * @param {String} url Clicked url
-         */
-        this.properties = {
-          /**
-           * A data to be highlighted and dispayed.
-           */
-          code: String,
-          /**
-           * Prism supported language.
-           */
-          lang: String,
-          /**
-           * A list of tokenized code.
-           * It's a result of calling `Prism.tokenize` function.
-           */
-          tokenized: {
-            type: Array,
-            readOnly: true
-          },
-          /**
-           * True if not all data has been displayed in the display.
-           */
-          hasMore: {
-            type: Boolean,
-            readOnly: true,
-            computed: '_computeHasMore(tokenized)'
-          },
-          /**
-           * A number of lined to display at once.
-           * After the limit is reached the display will show "load next [maxRead] items" and
-           * "load all" buttons.
-           */
-          maxRead: {
-            type: Number,
-            value: 500
-          },
-          // True when parsing code or tokens to HTML code.
-          working: {
-            type: Boolean,
-            value: false,
-            readOnly: true
-          },
-
-          // An element which should be searched for text.
-          _textSearch: {
-            type: HTMLElement,
-            value: function() {
-              return this.$.output;
-            }
+    var importLocation = '';
+    (function() {
+      if (window.currentImport && window.currentImport.URL) {
+        var url = window.currentImport.URL;
+        if (url === 'about:blank' && window.currentImport._URL) {
+          url = window.currentImport._URL;
+        }
+        if (url === 'about:blank') {
+          importLocation = '../';
+          // in test cases for edge this will fail because it should be
+          // set to ../../
+          // but right now I can't waste time to check how to check if this
+          // is the particular case.
+        } else {
+          var path = url.substr(url.indexOf('/', url.indexOf('/') + 2))
+            .replace('prism-highlight.html', '');
+          var lastDot = path.lastIndexOf('.');
+          if (lastDot !== -1 && path.substr(lastDot + 1) === 'html') {
+            // remove element file name path
+            path = path.substr(0, path.lastIndexOf('/') + 1);
           }
-        };
+          if (path.indexOf('/test') !== -1) {
+            path = path.substr(0, path.lastIndexOf('/') + 1);
+          }
+          importLocation = path;
+        }
       }
+    })();
+    Polymer({
+      is: 'prism-highlight',
+      /**
+       * An event fired when the user clicked on any link in the response
+       * panels or the headers
+       *
+       * @event url-change-action
+       * @param {String} url An url value
+       */
+      properties: {
+        /**
+         * A data to be highlighted and dispayed.
+         */
+        code: String,
+        /**
+         * Prism supported language.
+         */
+        lang: String,
+        /**
+         * A list of tokenized code.
+         * It's a result of calling `Prism.tokenize` function.
+         */
+        tokenized: {
+          type: Array,
+          readOnly: true
+        },
+        /**
+         * True if not all data has been displayed in the display.
+         */
+        hasMore: {
+          type: Boolean,
+          readOnly: true,
+          computed: '_computeHasMore(tokenized)'
+        },
+        /**
+         * A number of lined to display at once.
+         * After the limit is reached the display will show "load next
+         * [maxRead] items" and "load all" buttons.
+         */
+        maxRead: {
+          type: Number,
+          value: 500
+        },
+        // True when parsing code or tokens to HTML code.
+        working: {
+          type: Boolean,
+          value: false,
+          readOnly: true
+        },
 
-      get observers() {
-        return [
-          '_highlight(code, lang)'
-        ];
-      }
+        // An element which should be searched for text.
+        textSearch: {
+          type: HTMLElement,
+          value: function() {
+            return this.$.output;
+          }
+        }
+      },
 
-      detached() {
+      observers: [
+        '_highlight(code, lang)'
+      ],
+
+      detached: function() {
         if (this.worker) {
           this.worker.terminate();
           this.worker.onmessage = null;
           this.worker.onerror = null;
           this.worker = null;
         }
-      }
+      },
+      // Resets the state of the display to initial state.
+      reset: function() {
+        this._setTokenized(undefined);
+        this._setWorking(false);
+        this.$.output.innerHTML = '';
+      },
       /**
        * Hightligt the code.
        * @param {String} data The code to be highlighted
        * @param {String} mime Mime type to be used to recognize the language.
        */
-      _highlight(data, mime) {
-        this._setTokenized(undefined);
-        this.$.output.innerHTML = '';
-        var message = {
-          'language': mime,
-          'code': data,
-          'payload': 'tokenize'
-        };
-        this._runWorker(message);
-      }
+      _highlight: function() {
+        this.reset();
+        this.debounce('_highlight', function() {
+          var message = {
+            'language': this.lang,
+            'code': this.code,
+            'payload': 'tokenize'
+          };
+          this._runWorker(message);
+        }, 10);
+      },
       /**
        * Sends message to the hightligt worker if its already created.
        * If not, this will create worker and then post message.
        * @param {Objects} message An object to pass to the worker.
        */
-      _runWorker(message) {
+      _runWorker: function(message) {
         this._setWorking(true);
         if (this.worker) {
           this.worker.postMessage(message);
@@ -195,9 +229,9 @@ Custom property | Description | Default
         this.worker.onmessage = this._onWorkerData.bind(this);
         this.worker.onerror = this._onWorkerError.bind(this);
         this.worker.postMessage(message);
-      }
+      },
 
-      _onWorkerData(e) {
+      _onWorkerData: function(e) {
         this._setWorking(false);
         switch (e.data.payload) {
           case 'tokenize':
@@ -207,31 +241,36 @@ Custom property | Description | Default
             this._display(e.data.html);
             break;
         }
-      }
+      },
 
-      _onWorkerError(e) {
+      _onWorkerError: function(e) {
         this._setWorking(false);
-        console.error('Hightligt worker error', e);
-        var html = `<arc-error-message>
-    <p>${e.message}</p>
-  </arc-error-message>`;
+
+        var html = '<error-message><p>' + e.message + '</p></error-message>';
         this._display(html);
-      }
+
+        this.fire('app-log', {
+          message: e,
+          level: 'error'
+        });
+        console.error('Hightligt worker error', e);
+      },
       /**
        * Handler for worker function after code tokenization.
        *
        * @param {Array} tokens An array of tokens returnet by Prism.
        */
-      _onTokenized(tokens) {
+      _onTokenized: function(tokens) {
         this._setTokenized(tokens);
         this._loadNext();
-      }
+      },
 
       /**
-       * Display next tokens from `this.tokenized` list - up to `this.maxRead` elements.
-       * If after running this function the `this.tokenized` array is empty it will be set to undefined.
+       * Display next tokens from `this.tokenized` list - up to `this.maxRead`
+       * elements. If after running this function the `this.tokenized`
+       * array is empty it will be set to undefined.
        */
-      _loadNext() {
+      _loadNext: function() {
         if (!this.tokenized || this.tokenized.length === 0) {
           return;
         }
@@ -244,9 +283,9 @@ Custom property | Description | Default
         if (this.tokenized.length === 0) {
           this._setTokenized(undefined);
         }
-      }
+      },
 
-      _loadAll() {
+      _loadAll: function() {
         var tokens = this.tokenized;
         this._setTokenized(undefined);
         var message = {
@@ -254,23 +293,23 @@ Custom property | Description | Default
           'payload': 'stringify'
         };
         this._runWorker(message);
-      }
+      },
       /**
        * Display a HTML code generated by Prism.
        * @param {String} html HTML code to be displayed.
        */
-      _display(html) {
+      _display: function(html) {
         this.$.output.innerHTML += html;
-      }
+      },
 
-      _computeHasMore(tokenized) {
+      _computeHasMore: function(tokenized) {
         if (!tokenized || tokenized.length === 0) {
           return false;
         }
         return true;
-      }
+      },
 
-      _handleLinks(e) {
+      _handleLinks: function(e) {
         var el = e.target;
         if (el.nodeName !== 'A') {
           return;
@@ -278,12 +317,11 @@ Custom property | Description | Default
         e.preventDefault();
 
         var url = el.href;
-        this.fire('link', {
+        this.fire('url-change-action', {
           url: url
         });
       }
-    }
-    Polymer(PrismHighlight);
+    });
   })();
   </script>
 </dom-module>
