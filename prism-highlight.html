@@ -95,30 +95,29 @@ Custom property | Description | Default
 
     var importLocation = '';
     (function() {
+      var url;
       if (window.currentImport && window.currentImport.URL) {
-        var url = window.currentImport.URL;
-        if (url === 'about:blank' && window.currentImport._URL) {
+        url = window.currentImport.URL;
+        if (window.currentImport._URL) {
           url = window.currentImport._URL;
         }
-        if (url === 'about:blank') {
-          importLocation = '../';
-          // in test cases for edge this will fail because it should be
-          // set to ../../
-          // but right now I can't waste time to check how to check if this
-          // is the particular case.
-        } else {
-          var path = url.substr(url.indexOf('/', url.indexOf('/') + 2))
-            .replace('prism-highlight.html', '');
-          var lastDot = path.lastIndexOf('.');
-          if (lastDot !== -1 && path.substr(lastDot + 1) === 'html') {
-            // remove element file name path
-            path = path.substr(0, path.lastIndexOf('/') + 1);
-          }
-          if (path.indexOf('/test') !== -1) {
-            path = path.substr(0, path.lastIndexOf('/') + 1);
-          }
-          importLocation = path;
+      } else if (window.currentImport._URL) {
+        url = window.currentImport._URL;
+      } else {
+        url = window.location.href;
+      }
+      if (url === 'about:blank') {
+        importLocation = '../';
+        // in test cases for edge this will fail because it should be set to ../../
+        // but right now I can't waste time to check how to check if this is the particular case.
+      } else {
+        var path = url.substr(url.indexOf('/', 8));
+        path = path.substr(0, path.lastIndexOf('/') + 1);
+        if (path.indexOf('/test') !== -1 || path.indexOf('/demo') !== -1) {
+          path = path.substr(0, path.length - 1);
+          path = path.substr(0, path.lastIndexOf('/') + 1);
         }
+        importLocation = path;
       }
     })();
     Polymer({
@@ -177,6 +176,13 @@ Custom property | Description | Default
           value: function() {
             return this.$.output;
           }
+        },
+        // Path to element's assets (workers folder). Default to current location
+        importLocation: {
+          type: String,
+          value: function() {
+            return importLocation;
+          }
         }
       },
 
@@ -225,7 +231,7 @@ Custom property | Description | Default
           this.worker.postMessage(message);
           return;
         }
-        this.worker = new Worker(importLocation + 'workers/prism-worker.js');
+        this.worker = new Worker(this.importLocation + 'workers/prism-worker.js');
         this.worker.onmessage = this._onWorkerData.bind(this);
         this.worker.onerror = this._onWorkerError.bind(this);
         this.worker.postMessage(message);
