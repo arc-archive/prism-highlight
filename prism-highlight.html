@@ -307,21 +307,20 @@ Custom property | Description | Default
       _display: function(html) {
         this.$.output.innerHTML += html;
       },
-
+      // Computes if the element has more data to display.
       _computeHasMore: function(tokenized) {
         if (!tokenized || tokenized.length === 0) {
           return false;
         }
         return true;
       },
-
+      // Handler for links click.
       _handleLinks: function(e) {
         var el = e.target;
         if (el.nodeName !== 'A') {
           return;
         }
         e.preventDefault();
-
         var url = el.href;
         this.fire('url-change-action', {
           url: url
