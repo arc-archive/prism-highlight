@@ -18,6 +18,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../fetch-polyfill/fetch-polyfill.html">
+  <link rel="import" href="../../promise-polyfill/promise-polyfill.html">
   <link rel="import" href="../prism-highlight.html">
   <style is="custom-style" include="demo-pages-shared-styles">
   .vertical-section-container {
@@ -33,35 +35,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <template>
         <prism-highlight id="c1" lang="markdown"></prism-highlight>
         <script>
-        document.querySelector('#c1').code = '# Test highlight';
+        document.querySelector('#c1').code = '# Test highlight\nHello world!';
         </script>
       </template>
     </demo-snippet>
     <h3>The `prism-highlight` - javascript</h3>
     <demo-snippet>
       <template>
-<prism-highlight id="c2" lang="javascript"></prism-highlight>
-<script>
-  document.querySelector('#c2').code = `function(param) {
-  param.forEach((item) => this._parseItem(item))
-}`;
-</script>
+        <prism-highlight id="c2" lang="javascript"></prism-highlight>
+        <script>
+        document.querySelector('#c2').code = 'function(param) {\n' +
+          '  param.forEach((item) => this._parseItem(item))\n' +
+          '}';
+        </script>
       </template>
     </demo-snippet>
     <h3>The `prism-highlight` - long text</h3>
     <demo-snippet>
       <template>
-<prism-highlight id="c3" lang="markup"></prism-highlight>
-<script>
-  fetch('https://edition.cnn.com')
-  .then((r) => r.text())
-  .then((r) => {
-    document.querySelector('#c3').code = r;
-  })
-  .catch((e) => {
-    document.querySelector('#c3').code = e.message;
-  });
-</script>
+        <prism-highlight id="c3" lang="markup"></prism-highlight>
+        <script>
+        fetch(location.href)
+          .then(function(r) { return r.text(); })
+          .then(function(r) {
+            document.querySelector('#c3').code = r;
+          })
+          .catch(function(e) {
+            document.querySelector('#c3').code = e.message;
+          });
+        </script>
       </template>
     </demo-snippet>
   </div>

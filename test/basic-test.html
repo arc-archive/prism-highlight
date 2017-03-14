@@ -17,24 +17,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="../../web-component-tester/browser.js"></script>
     <script src="../../iron-test-helpers/test-helpers.js"></script>
     <script src="../../iron-test-helpers/mock-interactions.js"></script>
-
-    <!-- Step 1: import the element to test -->
     <link rel="import" href="../prism-highlight.html">
   </head>
   <body>
 
-    <test-fixture id="basic">
+    <test-fixture id="markdown">
       <template>
-        <prism-highlight></prism-highlight>
+        <prism-highlight lang="markdown"></prism-highlight>
       </template>
     </test-fixture>
 
     <script>
-    /* global suite, test, fixture, assert */
-    suite('basic', function() {
-      test('`prism-highlight` should be initialized', function() {
-        var element = fixture('basic');
-        assert.equal(element.isAttached, true, 'element.isAttached equals true');
+    /* global fixture, assert */
+    suite('markdown', function() {
+      var markdown;
+      var code = '# Test highlight\nHello world!\n';
+      code += '[link](https://domain.com)';
+
+      suiteSetup(function(done) {
+        markdown = fixture('markdown');
+        markdown.code = code;
+        // Parser works in web worker.
+        setTimeout(function() {
+          done();
+        }, 300);
+      });
+      /**
+       * NOTE!
+       * This function will always succeed (innerHTML is always a string).
+       *
+       * Mocha - at the moment of writing this test - don't support
+       * web workers and therefore the element can't be automatically tested.
+       */
+      test('Should parse markdown', function() {
+        assert.isString(markdown.$.output.innerHTML);
       });
     });
     </script>
