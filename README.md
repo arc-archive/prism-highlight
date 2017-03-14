@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/advanced-rest-client/prism-highlight.svg?branch=master)](https://travis-ci.org/advanced-rest-client/prism-highlight)  
+[![Build Status](https://travis-ci.org/advanced-rest-client/prism-highlight.svg?branch=stage)](https://travis-ci.org/advanced-rest-client/prism-highlight)  
 
 # prism-highlight
 

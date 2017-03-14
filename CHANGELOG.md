@@ -1,3 +1,19 @@
+<a name="2.0.2"></a>
+## [2.0.2](https://github.com/advanced-rest-client/prism-highlight/compare/2.0.1...v2.0.2) (2017-03-14)
+
+
+### Docs
+
+* Added documentation for undocumented methods ([6861d6a30c29f67774d73918f0dbcd97f0fa098b](https://github.com/advanced-rest-client/prism-highlight/commit/6861d6a30c29f67774d73918f0dbcd97f0fa098b))
+
+### Update
+
+* Removed >let< keyword and replaced with >var< ([7fce0e83282c7a8db61f5957508ebca7d5a076be](https://github.com/advanced-rest-client/prism-highlight/commit/7fce0e83282c7a8db61f5957508ebca7d5a076be))
+* Updated import location script, added element property to point the assets location ([0bb23b2862b2e5a73d3f5d7b983daf632c074201](https://github.com/advanced-rest-client/prism-highlight/commit/0bb23b2862b2e5a73d3f5d7b983daf632c074201))
+* Updated sauce browsers list configuration ([bf9f8048fec918d9bb63d7789294fb83030f8594](https://github.com/advanced-rest-client/prism-highlight/commit/bf9f8048fec918d9bb63d7789294fb83030f8594))
+
+
+
 <a name="2.0.1"></a>
 ## [2.0.1](https://github.com/advanced-rest-client/prism-highlight/compare/1.0.2...v2.0.1) (2017-01-04)
 

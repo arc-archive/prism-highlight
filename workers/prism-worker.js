@@ -36,7 +36,7 @@ var loadLanguage = function(lang) {
  * @param {function=} success
  * @param {function=} error
  */
-var loadLanguages = function(langs, success, error) {
+var loadLanguages = function(langs) {
   if (typeof langs === 'string') {
     langs = [langs];
   }
@@ -79,7 +79,7 @@ function detectLang(code, mime) {
     // text/html; charset=ISO-8859-2
     // application/vnd.dart;charset=utf-8
     // text/x-java-source;charset=utf-8
-    let i = mime.indexOf('/');
+    var i = mime.indexOf('/');
     if (i !== -1) {
       mime = mime.substr(i + 1);
       i = mime.indexOf(';');
