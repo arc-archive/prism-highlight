@@ -245,6 +245,7 @@ Custom property | Description | Default
             break;
           case 'stringify':
             this._display(e.data.html);
+            this.fire('prism-highlight-parsed');
             break;
         }
       },
@@ -259,7 +260,11 @@ Custom property | Description | Default
           message: e,
           level: 'error'
         });
-        console.error('Hightligt worker error', e);
+
+        this.fire('error', {
+          message: e.message
+        });
+        console.error('Highlight worker error', e);
       },
       /**
        * Handler for worker function after code tokenization.
