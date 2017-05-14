@@ -45,9 +45,19 @@ var loadLanguages = function(langs) {
   });
 };
 
-Prism.plugins.mods.langs.forEach(function(lang) {
-  loadLanguage(lang);
-});
+// Prism.plugins.mods.langs.forEach(function(lang) {
+//   loadLanguage(lang);
+// });
+
+function ensureLanguage(lang) {
+  if (lang in Prism.languages) {
+    return;
+  }
+  if (Prism.plugins.mods.langs.indexOf(lang) !== -1) {
+    loadLanguage(lang);
+  }
+}
+
 /**
  * Guess proper language parser for given code and mime type (lang).
  *
@@ -58,21 +68,22 @@ Prism.plugins.mods.langs.forEach(function(lang) {
 function detectLang(code, mime) {
   // console.log('Detecting lang for: ', lang);
   if (!mime) {
-    // console.log('Lang detected: html');
+    ensureLanguage('markup');
     return Prism.languages.html;
   }
   if (mime.indexOf('html') !== -1) {
-    // console.log('Lang detected: html');
+    ensureLanguage('markup');
     return Prism.languages.html;
   }
   if (mime.indexOf('js') !== -1 || mime.indexOf('es') === 0) {
-    // console.log('Lang detected: javascript');
+    ensureLanguage('javascript');
     return Prism.languages.javascript;
   } else if (mime.indexOf('css') !== -1) {
-    // console.log('Lang detected: css');
+    ensureLanguage('css');
     return Prism.languages.css;
   } else if (mime === 'c') {
     // console.log('Lang detected: clike');
+    ensureLanguage('clike');
     return Prism.languages.clike;
   }
   {
@@ -102,8 +113,10 @@ function detectLang(code, mime) {
   if (Prism.plugins.mods.langs.indexOf(mime) === -1) {
     // console.log('No lang found for mime: ', mime);
     // console.log('Lang detected: html');
+    ensureLanguage('markup');
     return Prism.languages.html;
   }
+  ensureLanguage(mime);
   if (mime in Prism.languages) {
     return Prism.languages[mime];
   }
