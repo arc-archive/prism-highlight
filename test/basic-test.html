@@ -34,23 +34,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       var code = '# Test highlight\nHello world!\n';
       code += '[link](https://domain.com)';
 
+      var parsed;
       suiteSetup(function(done) {
         markdown = fixture('markdown');
-        markdown.code = code;
-        // Parser works in web worker.
-        setTimeout(function() {
+        markdown.addEventListener('prism-highlight-parsed', function() {
+          parsed = markdown.$.output.innerHTML;
           done();
-        }, 300);
+        });
+        markdown.addEventListener('error', function(e) {
+          done(new Error(emdetail.message));
+        });
+        markdown.code = code;
       });
-      /**
-       * NOTE!
-       * This function will always succeed (innerHTML is always a string).
-       *
-       * Mocha - at the moment of writing this test - don't support
-       * web workers and therefore the element can't be automatically tested.
-       */
-      test('Should parse markdown', function() {
-        assert.isString(markdown.$.output.innerHTML);
+
+      test('Parsed result should not be empty', function() {
+        assert.isAbove(parsed.length, 0);
+      });
+
+      test('Should recognize the title', function() {
+        var index = parsed.indexOf('token title');
+        assert.isAbove(index, 0);
+      });
+
+      test('Should recognize the link', function() {
+        var index = parsed.indexOf('url-link');
+        assert.isAbove(index, 0);
       });
     });
     </script>
