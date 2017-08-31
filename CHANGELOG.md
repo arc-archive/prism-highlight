@@ -1,3 +1,17 @@
+<a name="2.1.1"></a>
+## [2.1.1](https://github.com/advanced-rest-client/prism-highlight/compare/2.0.4...2.1.1) (2017-08-31)
+
+
+### New
+
+* Added tokenize task timeout that terminates the worker. ([b532a988589114440df7fadd846554068099d95e](https://github.com/advanced-rest-client/prism-highlight/commit/b532a988589114440df7fadd846554068099d95e))
+
+### Update
+
+* Bumped version of the element. ([12dd604cc5873d160f97feba8579c2ae31d5c9bc](https://github.com/advanced-rest-client/prism-highlight/commit/12dd604cc5873d160f97feba8579c2ae31d5c9bc))
+
+
+
 <a name="2.0.4"></a>
 ## [2.0.4](https://github.com/advanced-rest-client/prism-highlight/compare/2.0.3...v2.0.4) (2017-05-14)
 

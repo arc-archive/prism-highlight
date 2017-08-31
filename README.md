@@ -44,4 +44,6 @@ Custom property | Description | Default
 ### Events
 | Name | Description | Params |
 | --- | --- | --- |
+| prism-highlight-parsed | Fired when highlighting is applied to the code view. | __none__ |
+| prism-highlight-timeout | Fired when the tokenize task timeout. The event is cancelable. | message **String** - A message to display to the user. |
 | url-change-action | An event fired when the user clicked on any link in the response panels or the headers | url **String** - An url value |
