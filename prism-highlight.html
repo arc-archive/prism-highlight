@@ -129,6 +129,18 @@ Custom property | Description | Default
        * @event url-change-action
        * @param {String} url An url value
        */
+      /**
+       * Fired when the tokenize task timeout.
+       * The event is cancelable.
+       *
+       * @event prism-highlight-timeout
+       * @param {String} message A message to display to the user.
+       */
+      /**
+       * Fired when highlighting is applied to the code view.
+       *
+       * @event prism-highlight-parsed
+       */
       properties: {
         /**
          * A data to be highlighted and dispayed.
@@ -183,6 +195,20 @@ Custom property | Description | Default
           value: function() {
             return importLocation;
           }
+        },
+        // A web worker instance that parses the syntax
+        worker: {
+          type: Object,
+          readOnly: true
+        },
+        /**
+         * Number of miliseconds after which the tokenize task fail sending
+         * `prism-highlight-timeout` event.
+         * Set to "falsy" value to remove timeout.
+         */
+        tokenizeTimeout: {
+          type: Number,
+          value: 5000
         }
       },
 
@@ -191,12 +217,7 @@ Custom property | Description | Default
       ],
 
       detached: function() {
-        if (this.worker) {
-          this.worker.terminate();
-          this.worker.onmessage = null;
-          this.worker.onerror = null;
-          this.worker = null;
-        }
+        this._unregisterWorker();
       },
       // Resets the state of the display to initial state.
       reset: function() {
@@ -227,18 +248,60 @@ Custom property | Description | Default
        */
       _runWorker: function(message) {
         this._setWorking(true);
-        if (this.worker) {
-          this.worker.postMessage(message);
+        if (!this.worker) {
+          this._registerWorker();
+        }
+        this.worker.postMessage(message);
+        var timeout = this.tokenizeTimeout;
+        if (timeout) {
+          this._tokenizeTimeout =
+            window.setTimeout(this._onTokenizeTimeout.bind(this), timeout);
+        }
+      },
+      /**
+       * Clears the tokenize timeout if set.
+       */
+      _clearTokenizeTimeout: function() {
+        if (!this._tokenizeTimeout) {
           return;
         }
-        this.worker = new Worker(this.importLocation + 'workers/prism-worker.js');
-        this.worker.onmessage = this._onWorkerData.bind(this);
-        this.worker.onerror = this._onWorkerError.bind(this);
-        this.worker.postMessage(message);
+        window.clearTimeout(this._tokenizeTimeout);
+        this._tokenizeTimeout = undefined;
+      },
+      /**
+       * Creates an instance of a web worker.
+       * It does nothing if the worker is already created.
+       */
+      _registerWorker: function() {
+        if (this.worker) {
+          return;
+        }
+        var worker = new Worker(this.importLocation + 'workers/prism-worker.js');
+        this.__workerDataHandler = this.__workerDataHandler ?
+          this.__workerDataHandler : this._onWorkerData.bind(this);
+        this.__workerErrorHandler = this.__workerErrorHandler ?
+          this.__workerErrorHandler : this._onWorkerError.bind(this);
+        worker.addEventListener('message', this.__workerDataHandler);
+        worker.addEventListener('error', this.__workerErrorHandler);
+        this._setWorker(worker);
+      },
+      /**
+       * Terminates the worker (if exists) and removes event listeners
+       */
+      _unregisterWorker: function() {
+        if (!this.worker) {
+          return;
+        }
+        this._clearTokenizeTimeout();
+        this.worker.removeEventListener('message', this.__workerDataHandler);
+        this.worker.removeEventListener('error', this.__workerErrorHandler);
+        this.worker.terminate();
+        this._setWorker(undefined);
       },
 
       _onWorkerData: function(e) {
         this._setWorking(false);
+        this._clearTokenizeTimeout();
         switch (e.data.payload) {
           case 'tokenize':
             this._onTokenized(e.data.tokens);
@@ -252,7 +315,7 @@ Custom property | Description | Default
 
       _onWorkerError: function(e) {
         this._setWorking(false);
-
+        this._clearTokenizeTimeout();
         var html = '<error-message><p>' + e.message + '</p></error-message>';
         this._display(html);
 
@@ -329,6 +392,20 @@ Custom property | Description | Default
         var url = el.href;
         this.fire('url-change-action', {
           url: url
+        });
+      },
+      /**
+       * Called when the tokenize task exceeds timeout set in the `tokenizeTimeout`
+       * property
+       */
+      _onTokenizeTimeout: function() {
+        this._setWorking(false);
+        this._unregisterWorker();
+        var message = 'Highlighter is unable to highlight the syntax.';
+        this.fire('prism-highlight-timeout', {
+          message: message
+        }, {
+          cancelable: true
         });
       }
     });
