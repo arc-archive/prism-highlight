@@ -16,6 +16,7 @@ the License.
 <link rel="import" href="../paper-progress/paper-progress.html">
 <link rel="import" href="../paper-styles/paper-styles.html">
 <link rel="import" href="../error-message/error-message.html">
+<link rel="import" href="../text-search-behavior/text-search-behavior.html">
 <link rel="import" href="prism-import.html">
 <link rel="import" href="prism-styles.html">
 <!--
@@ -122,6 +123,9 @@ Custom property | Description | Default
     })();
     Polymer({
       is: 'prism-highlight',
+      behaviors: [
+        ArcBehaviors.TextSearchBehavior
+      ],
       /**
        * An event fired when the user clicked on any link in the response
        * panels or the headers
@@ -183,7 +187,7 @@ Custom property | Description | Default
         },
 
         // An element which should be searched for text.
-        textSearch: {
+        _textSearch: {
           type: HTMLElement,
           value: function() {
             return this.$.output;
