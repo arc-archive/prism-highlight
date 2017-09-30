@@ -42,7 +42,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           done();
         });
         markdown.addEventListener('error', function(e) {
-          done(new Error(emdetail.message));
+          done(new Error(e.detail.message));
         });
         markdown.code = code;
       });
@@ -59,6 +59,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       test('Should recognize the link', function() {
         var index = parsed.indexOf('url-link');
         assert.isAbove(index, 0);
+      });
+
+      test('Should mark a word', function() {
+        markdown.mark('Hello');
+        assert.equal(markdown.markedCount, 1);
       });
     });
     </script>
