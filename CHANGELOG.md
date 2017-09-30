@@ -1,3 +1,13 @@
+<a name="2.1.3"></a>
+## [2.1.3](https://github.com/advanced-rest-client/prism-highlight/compare/2.1.1...2.1.3) (2017-09-30)
+
+
+### Fix
+
+* Adding missing search text behavior ([9313681c52a996f4157ddb2efa6d043a05e98bd1](https://github.com/advanced-rest-client/prism-highlight/commit/9313681c52a996f4157ddb2efa6d043a05e98bd1))
+
+
+
 <a name="2.1.2"></a>
 ## [2.1.2](https://github.com/advanced-rest-client/prism-highlight/compare/2.1.1...2.1.2) (2017-08-31)
 
