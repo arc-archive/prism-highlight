@@ -1,3 +1,14 @@
+<a name="2.1.4"></a>
+## [2.1.4](https://github.com/advanced-rest-client/prism-highlight/compare/2.1.3...2.1.4) (2017-10-06)
+
+
+### Fix
+
+* Fixed worker import path when in file scheme. ([7bd8aeb4df2e724180597aeaeb2b15238463ddf4](https://github.com/advanced-rest-client/prism-highlight/commit/7bd8aeb4df2e724180597aeaeb2b15238463ddf4))
+* Fixed worker import path when in file scheme. ([84ac1be36bb0001d7346f6661c436520ecde9c54](https://github.com/advanced-rest-client/prism-highlight/commit/84ac1be36bb0001d7346f6661c436520ecde9c54))
+
+
+
 <a name="2.1.3"></a>
 ## [2.1.3](https://github.com/advanced-rest-client/prism-highlight/compare/2.1.1...2.1.3) (2017-09-30)
 
