@@ -283,7 +283,13 @@ Custom property | Description | Default
         if (this.worker) {
           return;
         }
-        var worker = new Worker(this.importLocation + 'workers/prism-worker.js');
+        var location = this.importLocation;
+        if (!location || location.indexOf('chrome-extension') === 0) {
+          location = this.resolveUrl('workers/prism-worker.js');
+        } else {
+          location += 'workers/prism-worker.js';
+        }
+        var worker = new Worker(location);
         this.__workerDataHandler = this.__workerDataHandler ?
           this.__workerDataHandler : this._onWorkerData.bind(this);
         this.__workerErrorHandler = this.__workerErrorHandler ?
