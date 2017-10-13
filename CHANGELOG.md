@@ -1,3 +1,13 @@
+<a name="2.1.6"></a>
+## [2.1.6](https://github.com/advanced-rest-client/prism-highlight/compare/2.1.5...2.1.6) (2017-10-13)
+
+
+### Fix
+
+* Temporary fix for chrome app - to be resolved permamently with web version. ([6d80b530e6323c2bb81d32fc4a99fb42f5f51543](https://github.com/advanced-rest-client/prism-highlight/commit/6d80b530e6323c2bb81d32fc4a99fb42f5f51543))
+
+
+
 <a name="2.1.5"></a>
 ## [2.1.5](https://github.com/advanced-rest-client/prism-highlight/compare/2.1.4...2.1.5) (2017-10-06)
 
