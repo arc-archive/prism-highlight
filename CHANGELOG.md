@@ -1,3 +1,13 @@
+<a name="2.1.8"></a>
+## [2.1.8](https://github.com/advanced-rest-client/prism-highlight/compare/2.1.7...2.1.8) (2017-11-08)
+
+
+### Update
+
+* Once for all resolved import location for the workers. ([f4fd3e4c4ba0d1bb29d0614f1dd45c676cb33929](https://github.com/advanced-rest-client/prism-highlight/commit/f4fd3e4c4ba0d1bb29d0614f1dd45c676cb33929))
+
+
+
 <a name="2.1.7"></a>
 ## [2.1.7](https://github.com/advanced-rest-client/prism-highlight/compare/2.1.6...2.1.7) (2017-10-13)
 
