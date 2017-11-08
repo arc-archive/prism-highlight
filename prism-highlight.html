@@ -93,37 +93,6 @@ Custom property | Description | Default
   <script>
   (function() {
     'use strict';
-
-    var importLocation = '';
-    (function() {
-      var url;
-      if (window.currentImport && window.currentImport.URL) {
-        url = window.currentImport.URL;
-        if (window.currentImport._URL) {
-          url = window.currentImport._URL;
-        }
-      } else if (window.currentImport._URL) {
-        url = window.currentImport._URL;
-      } else {
-        url = window.location.href;
-      }
-      if (url === 'about:blank') {
-        importLocation = '../';
-        // in test cases for edge this will fail because it should be set to ../../
-        // but right now I can't waste time to check how to check if this is the particular case.
-      } else {
-        var path = url;
-        if (path.substr(0, 4) === 'http') {
-          path = path.substr(url.indexOf('/', 8));
-        }
-        path = path.substr(0, path.lastIndexOf('/') + 1);
-        if (path.indexOf('/test') !== -1 || path.indexOf('/demo') !== -1) {
-          path = path.substr(0, path.length - 1);
-          path = path.substr(0, path.lastIndexOf('/') + 1);
-        }
-        importLocation = path;
-      }
-    })();
     Polymer({
       is: 'prism-highlight',
       behaviors: [
@@ -194,13 +163,6 @@ Custom property | Description | Default
           type: HTMLElement,
           value: function() {
             return this.$.output;
-          }
-        },
-        // Path to element's assets (workers folder). Default to current location
-        importLocation: {
-          type: String,
-          value: function() {
-            return importLocation;
           }
         },
         // A web worker instance that parses the syntax
@@ -283,13 +245,7 @@ Custom property | Description | Default
         if (this.worker) {
           return;
         }
-        var location = this.importLocation;
-        if (!location || location.indexOf('chrome-extension') === 0) {
-          location = this.resolveUrl('workers/prism-worker.js');
-        } else {
-          location += 'workers/prism-worker.js';
-        }
-        var worker = new Worker(location);
+        var worker = new Worker(this.resolveUrl('workers/prism-worker.js'));
         this.__workerDataHandler = this.__workerDataHandler ?
           this.__workerDataHandler : this._onWorkerData.bind(this);
         this.__workerErrorHandler = this.__workerErrorHandler ?
