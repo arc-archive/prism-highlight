@@ -1,3 +1,9 @@
+<a name="2.1.11"></a>
+## [2.1.11](https://github.com/advanced-rest-client/prism-highlight/compare/2.1.10...2.1.11) (2018-02-06)
+
+
+
+
 <a name="2.1.10"></a>
 ## [2.1.10](https://github.com/advanced-rest-client/prism-highlight/compare/2.1.9...2.1.10) (2018-02-06)
 
