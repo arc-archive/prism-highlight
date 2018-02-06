@@ -358,6 +358,8 @@ Custom property | Description | Default
           return;
         }
         e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
         var url = el.href;
         this.fire('url-change-action', {
           url: url
