@@ -1,3 +1,13 @@
+<a name="2.1.10"></a>
+## [2.1.10](https://github.com/advanced-rest-client/prism-highlight/compare/2.1.9...2.1.10) (2018-02-06)
+
+
+### Update
+
+* Stopping propagation of the click on link event. ([1155b957f3fb7725b03a9b279b6fff6e29aed1a3](https://github.com/advanced-rest-client/prism-highlight/commit/1155b957f3fb7725b03a9b279b6fff6e29aed1a3))
+
+
+
 <a name="2.1.9"></a>
 ## [2.1.9](https://github.com/advanced-rest-client/prism-highlight/compare/2.1.8...2.1.9) (2017-11-08)
 
