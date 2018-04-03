@@ -1,25 +1,28 @@
 language: node_js
-sudo: required
-dist: trusty
 node_js: stable
+sudo: required
 before_script:
-- npm install --silent bower polymer-cli
-- bower install --silent
+- npm install -g polymer-cli
+- polymer install --variants
 addons:
+  firefox: latest
+  apt:
+    sources:
+    - google-chrome
+    packages:
+    - google-chrome-stable
   sauce_connect: true
 script:
 - npm run lint
-- node_modules/.bin/polymer test --plugin sauce --job-name "prism-highlight:${TRAVIS_BRANCH}" --build-number=${TRAVIS_BUILD_NUMBER}
+- xvfb-run polymer test polymer test --plugin local
+- if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then polymer test --plugin sauce --job-name
+  "prism-highlight:${TRAVIS_BRANCH}" --build-number=${TRAVIS_BUILD_NUMBER};
+  fi
 cache:
   directories:
-  - bower_components
   - node_modules
-branches:
-  only:
-    - stage
-    - develop
 after_success:
-  - node tasks/ci.js
+- node tasks/ci.js
 env:
   global:
   - secure: ordssnIp3BbA5Bfahy+GCp+8qrTFMGA9P2cHk38+JtuTFQM7WlQz+U8zNrssguqJoG8MitBxm9awzMfFcdTwujbEbJpbJF81w080ufDnJyUKiFT7RC0hy5eOMN6NxeLh4gcIE6iJ7eTtqOe2kJnW6ZyUuGY1wLJCXBDT9ijJBuu4VE7TKwXOQ2h8LD1wvN1bskzfdXSKXlpg0QscX0zYyI2IzZe5Oo5Szzoc9nOi/tmxViwdKLf4W4gqNfrddAKjAwzlhegGWskBjbNI7ObIauTSEmQqZ98JIh2Crt0DxJDcMsDXjbw5E08307Pu8xYV9ck6mVj7gyH7RDZgns3d6aWd096ykbFnKXJ9BxOSQ/WGnyNBopaStn/p4mQIQRm5GYdMDaunA6AOymfvvXEeJFy2HxRj11luosjNRJp12/pLNbuzfD/t4vplcMEM97dl1LnhyUcIzef68P/B5v6849sDQfBNfJzwTWAxfW1B5ZZ1PTY0SYx6XvzQr9cpDwzDx62fZ3+WxyMwvU1kAr5LtipOO8/1lUODNgDo1i5lZH1FKv1Y+v9T0hlRIopEO6r1t8xoUaivmHWVh7PhJP0qX6aiY45pJ6oEtCuCTrwgOHnDfD3lKjhHX1Pw/PGnJDIBUrRrnbdNRvqLb6QV6MJwltRpJLYmF1pLbYPbyS1Ikow=
