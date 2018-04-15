@@ -14,13 +14,12 @@ the License.
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-progress/paper-progress.html">
-<link rel="import" href="../error-message/error-message.html">
 <link rel="import" href="prism-import.html">
 <link rel="import" href="prism-styles.html">
 <dom-module id="prism-highlight">
   <template>
     <style include="prism-styles">
-     :host {
+    :host {
       display: block;
       @apply --prism-highlight;
     }
@@ -35,15 +34,17 @@ the License.
       width: 100%;
     }
 
-    .arc-search-mark.selected {
-      background-color: var(--prism-highlight-mark-selected, #ff9632);
+    .worker-error {
+      color: var(--error-color);
     }
     </style>
-    <pre class="parsed-content"><code id="output" class="language-" on-tap="_handleLinks"></code></pre>
-    <div hidden$="[[!hasMore]]">
-      <paper-button raised on-tap="_loadNext" data-action="load-next">Show next [[maxRead]] lines</paper-button>
-      <paper-button raised on-tap="_loadAll" data-action="load-all">Display all</paper-button>
-    </div>
+    <pre class="parsed-content"><code id="output" class="language-" on-click="_handleLinks"></code></pre>
+    <template is="dom-if" if="[[hasMore]]">
+      <div>
+        <paper-button raised on-tap="_loadNext" data-action="load-next">Show next [[maxRead]] lines</paper-button>
+        <paper-button raised on-tap="_loadAll" data-action="load-all">Display all</paper-button>
+      </div>
+    </template>
     <paper-progress indeterminate hidden$="[[!working]]"></paper-progress>
   </template>
   <script>
@@ -86,7 +87,7 @@ the License.
    * ----------------|-------------|----------
    * `--prism-highlight` | Mixin applied to the element | `{}`
    * `--prism-highlight-code` | Mixin applied to the `<pre>` element | `{}`
-   * `--prism-highlight-mark-selected` | Background color for the `<mark>` element when using custom search | `#ff9632`
+   * `--error-color` | Color of the error message when script error ocurred in the worker | ``
    *
    * @customElement
    * @polymer
@@ -266,6 +267,11 @@ the License.
       this._setWorking(false);
       this._clearTokenizeTimeout();
       switch (e.data.payload) {
+        case 'error':
+          this._renderWorkerError();
+          this._notifyError(e.data);
+          console.warn(e.data);
+          break;
         case 'tokenize':
           this._onTokenized(e.data.tokens);
           break;
@@ -278,6 +284,34 @@ the License.
       }
     }
     /**
+     * Renders fallback view when there was a script error in the worker.
+     */
+    _renderWorkerError() {
+      const p = document.createElement('p');
+      p.className = 'worker-error';
+      p.innerText = 'Script error. Dispalaying unprocessed data.';
+      this.$.output.innerHTML = '';
+      this.$.output.appendChild(p);
+      const div = document.createElement('div');
+      div.className = 'raw-content';
+      div.innerText = this.code;
+      this.$.output.appendChild(div);
+      this._setTokenized(undefined);
+    }
+    /**
+     * Dispatches `error` event
+     *
+     * @param {Error} e
+     */
+    _notifyError(e) {
+      this.dispatchEvent(new CustomEvent('error', {
+        bubbles: false,
+        detail: {
+          message: e.message
+        }
+      }));
+    }
+    /**
      * Handler for worker error.
      *
      * @param {Error} e
@@ -285,8 +319,8 @@ the License.
     _onWorkerError(e) {
       this._setWorking(false);
       this._clearTokenizeTimeout();
-      const html = '<error-message><p>' + e.message + '</p></error-message>';
-      this._display(html);
+      this._renderWorkerError();
+      this._notifyError(e);
       this.dispatchEvent(new CustomEvent('app-log', {
         bubbles: true,
         composed: true,
@@ -295,13 +329,6 @@ the License.
           level: 'error'
         }
       }));
-      this.dispatchEvent(new CustomEvent('error', {
-        bubbles: false,
-        detail: {
-          message: e.message
-        }
-      }));
-      console.error('Highlight worker error', e);
     }
     /**
      * Handler for worker function after code tokenization.

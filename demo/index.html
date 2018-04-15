@@ -11,6 +11,9 @@
   <link rel="import" href="../prism-highlight.html">
   <custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
+    :root {
+      --error-color: red;
+    }
     </style>
   </custom-style>
 </head>
@@ -21,7 +24,7 @@
       <template>
         <prism-highlight id="c1" lang="markdown"></prism-highlight>
         <script>
-        document.querySelector('#c1').code = '# Test highlight\nHello world!';
+        document.querySelector('#c1').code = '# Test highlight\nHello world!\n[link](https://domain.com)';
         </script>
       </template>
     </demo-snippet>

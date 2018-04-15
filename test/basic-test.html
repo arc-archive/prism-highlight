@@ -117,7 +117,57 @@
         });
       });
     });
-    </script>
 
+    suite('Anchors handling', () => {
+      let markdown;
+      let code = '# Test highlight\nHello world!\n';
+      code += '[link](https://domain.com/)';
+      suiteSetup((done) => {
+        markdown = fixture('Basic');
+        markdown.addEventListener('prism-highlight-parsed', () => {
+          done();
+        });
+        markdown.addEventListener('error', function(e) {
+          done(new Error(e.detail.message));
+        });
+        markdown.code = code;
+      });
+
+      test('Dispatches url-change-action custom event', (done) => {
+        const anchor = markdown.$.output.querySelector('a');
+        markdown.addEventListener('url-change-action', function clb(e) {
+          markdown.removeEventListener('url-change-action', clb);
+          assert.equal(e.detail.url, 'https://domain.com/');
+          done();
+        });
+        MockInteractions.tap(anchor);
+      });
+    });
+
+    suite('Error handling', () => {
+      let markdown;
+      let code = '# Test highlight\nHello world!\n';
+      code += '[link](https://domain.com/)';
+      setup((done) => {
+        markdown = fixture('Basic');
+        markdown.addEventListener('prism-highlight-parsed', () => {
+          done();
+        });
+        markdown.addEventListener('error', function(e) {
+          done(new Error(e.detail.message));
+        });
+        markdown.code = code;
+      });
+
+      test('Renders error message', () => {
+        markdown._renderWorkerError();
+        const info = markdown.shadowRoot.querySelector('.worker-error');
+        assert.ok(info);
+        const raw = markdown.shadowRoot.querySelector('.raw-content');
+        assert.ok(raw);
+        assert.equal(raw.innerText, code);
+      });
+    });
+    </script>
   </body>
 </html>
