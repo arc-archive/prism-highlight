@@ -369,7 +369,7 @@ the License.
       e.preventDefault();
       e.stopPropagation();
       e.stopImmediatePropagation();
-      this.dispatchEvent(new CustomEvent('prism-highlight-timeout', {
+      this.dispatchEvent(new CustomEvent('url-change-action', {
         cancelable: true,
         bubbles: true,
         composed: true,
