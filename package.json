@@ -1,26 +1,22 @@
 {
-  "name": "prism-highlight",
-  "version": "2.1.11",
-  "license": "Apache-2.0 OR CC-BY-4.0",
+  "name": "@advanced-rest-client/prism-highlight",
   "description": "Syntax highlighting via Prism",
+  "version": "3.0.0",
+  "license": "Apache-2.0",
+  "authors": [
+    "Pawel Psztyc",
+    "The Advanced REST client authors <arc@mulesoft.com>"
+  ],
   "devDependencies": {
-    "polymer-cli": "^0.17.0"
-  },
-  "engines": {
-    "node": ">=0.10.0"
+    "@polymer/gen-typescript-declarations": "^1.2.2"
   },
   "private": false,
-  "main": [
-    "prism-highlight.html"
-  ],
-  "author": "The Advanced REST Client authors",
+  "main": "prism-highlight.html",
   "scripts": {
-    "serve": "node_modules/.bin/polymer serve",
-    "lint": "node_modules/.bin/polymer lint prism-highlight.html",
-    "test-sauce": "node_modules/.bin/polymer test --plugin sauce --job-name \"prism-highlight:local-test\"",
-    "test": "node_modules/.bin/polymer test",
-    "deps": "npm install --quiet && bower install --quiet",
-    "update-deps": "npm update --quiet && bower update --quiet"
+    "lint": "polymer lint prism-highlight.html",
+    "test-sauce": "polymer test --plugin sauce --job-name \"prism-highlight:local-test\"",
+    "test": "polymer test --plugin local",
+    "update-types": "gen-typescript-declarations --deleteExisting --outDir ."
   },
   "repository": {
     "type": "git",

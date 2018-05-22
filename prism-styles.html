@@ -6,7 +6,6 @@
      * Based on dabblet (http://dabblet.com)
      * @author Lea Verou
      */
-
     code[class*="language-"],
     pre[class*="language-"] {
       color: black;
@@ -34,7 +33,7 @@
     code[class*="language-"]::-moz-selection,
     code[class*="language-"]::-moz-selection {
       text-shadow: none;
-      background: #b3d4fc;
+      background: var(--prism-container-background-color, #b3d4fc);
     }
 
     pre[class*="language-"]::selection,
@@ -42,7 +41,7 @@
     code[class*="language-"]::selection,
     code[class*="language-"]::selection {
       text-shadow: none;
-      background: #b3d4fc;
+      background: var(--prism-container-background-color, #b3d4fc);
     }
 
     @media print {
@@ -79,7 +78,7 @@
     }
 
     .token.punctuation {
-      color: #999;
+      color: var(--code-punctuation-value-color, #999);
     }
 
     .namespace {
@@ -88,12 +87,18 @@
 
     .token.property,
     .token.tag,
-    .token.boolean,
-    .token.number,
     .token.constant,
     .token.symbol,
     .token.deleted {
-      color: #905;
+      color: var(--code-property-value-color, #905);
+    }
+
+    .token.number {
+      color: var(--code-type-number-value-color, #905);
+    }
+
+    .token.boolean {
+      color: var(--code-type-boolean-value-color, #905);
     }
 
     .token.selector,
@@ -102,7 +107,7 @@
     .token.char,
     .token.builtin,
     .token.inserted {
-      color: #690;
+      color: var(--code-type-text-value-color, #690);
     }
 
     .token.operator,
@@ -117,17 +122,17 @@
     .token.atrule,
     .token.attr-value,
     .token.keyword {
-      color: #07a;
+      color: var(--code-keyword-value-color, #07a);
     }
 
     .token.function {
-      color: #DD4A68;
+      color: var(--code-function-value-color, #DD4A68);
     }
 
     .token.regex,
     .token.important,
     .token.variable {
-      color: #e90;
+      color: var(--code-variable-value-color, #e90);
     }
 
     .token.important,

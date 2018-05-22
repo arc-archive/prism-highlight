@@ -7,11 +7,21 @@ self.document = {
     return [];
   }
 };
-importScripts(
-  '../../prism/prism.js',
-  '../../prism/plugins/autolinker/prism-autolinker.min.js',
-  'prism-modes.js'
-);
+let errored = false;
+try{
+  importScripts(
+    '../../prism/prism.js',
+    '../../prism/plugins/autolinker/prism-autolinker.min.js',
+    'prism-modes.js'
+  );
+} catch (e) {
+  errored = true;
+  self.postMessage({
+    payload: 'error',
+    message: 'Unable to import Prism library.'
+  });
+}
+
 function getLanguagePath(lang) {
   return Prism.plugins.mods.path + 'prism-' + lang + '.min.js';
 }
@@ -147,6 +157,9 @@ function stringify(data) {
   return Prism.Token.stringify(Prism.util.encode(data));
 }
 self.onmessage = function(e) {
+  if (errored) {
+    return;
+  }
   var data = e.data;
   var result = {
     payload: data.payload
