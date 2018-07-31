@@ -1,3 +1,18 @@
+<a name="3.0.1"></a>
+## [3.0.1](https://github.com/advanced-rest-client/prism-highlight/compare/2.1.10...3.0.1) (2018-07-31)
+
+
+### Fix
+
+* Fixing typo in error message ([bfea339a427d2824e46968863e35bf7c6006f076](https://github.com/advanced-rest-client/prism-highlight/commit/bfea339a427d2824e46968863e35bf7c6006f076))
+* Fixing url change event name to the right one ([356a9c1bab275f807c080a70e6740884aa3dae6e](https://github.com/advanced-rest-client/prism-highlight/commit/356a9c1bab275f807c080a70e6740884aa3dae6e))
+
+### Update
+
+* Publishing stable version with Polymer 2 support. ([1eb9f0d6c9239846fd8df51ac095be4c69afba89](https://github.com/advanced-rest-client/prism-highlight/commit/1eb9f0d6c9239846fd8df51ac095be4c69afba89))
+
+
+
 <a name="3.0.0"></a>
 # [3.0.0](https://github.com/advanced-rest-client/prism-highlight/compare/2.1.10...3.0.0) (2018-05-22)
 
