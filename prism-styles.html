@@ -8,12 +8,6 @@
      */
     code[class*="language-"],
     pre[class*="language-"] {
-      color: black;
-      background: none;
-      text-shadow: 0 1px white;
-      font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-      direction: ltr;
-      text-align: left;
       white-space: pre-wrap;
       word-spacing: normal;
       word-break: break-all;
@@ -22,10 +16,11 @@
       -moz-tab-size: 4;
       -o-tab-size: 4;
       tab-size: 4;
-      -webkit-hyphens: none;
-      -moz-hyphens: none;
-      -ms-hyphens: none;
-      hyphens: none;
+      hyphens: auto;
+      background-color: var(--prism-container-background-color);
+      display: block;
+      @apply --arc-font-code1;
+      @apply --prism-container;
     }
 
     pre[class*="language-"]::-moz-selection,
@@ -33,7 +28,7 @@
     code[class*="language-"]::-moz-selection,
     code[class*="language-"]::-moz-selection {
       text-shadow: none;
-      background: var(--prism-container-background-color, #b3d4fc);
+      background: var(--prism-container-selection-background-color, #b3d4fc);
     }
 
     pre[class*="language-"]::selection,
@@ -41,7 +36,7 @@
     code[class*="language-"]::selection,
     code[class*="language-"]::selection {
       text-shadow: none;
-      background: var(--prism-container-background-color, #b3d4fc);
+      background: var(--prism-container-selection-background-color, #b3d4fc);
     }
 
     @media print {
