@@ -12,7 +12,7 @@
     "url": "git://github.com/advanced-rest-client/prism-highlight.git"
   },
   "name": "@advanced-rest-client/prism-highlight",
-  "version": "3.0.0-preview.1",
+  "version": "4.0.0-preview.1",
   "license": "Apache-2.0",
   "authors": [
     "Pawel Psztyc",
