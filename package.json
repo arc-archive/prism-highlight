@@ -1,25 +1,50 @@
 {
-  "name": "@advanced-rest-client/prism-highlight",
   "description": "Syntax highlighting via Prism",
-  "version": "3.0.3",
+  "keywords": [
+    "web-components",
+    "polymer",
+    "prism",
+    "highlighting",
+    "syntax"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/advanced-rest-client/prism-highlight.git"
+  },
+  "name": "@advanced-rest-client/prism-highlight",
+  "version": "3.0.0-preview.1",
   "license": "Apache-2.0",
   "authors": [
     "Pawel Psztyc",
     "The Advanced REST client authors <arc@mulesoft.com>"
   ],
   "devDependencies": {
-    "@polymer/gen-typescript-declarations": "^1.5.1"
+    "@polymer/gen-typescript-declarations": "^1.5.1",
+    "@polymer/iron-demo-helpers": "^3.0.0",
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "@polymer/iron-test-helpers": "^3.0.0",
+    "@polymer/iron-component-page": "^4.0.0",
+    "@polymer/test-fixture": "^4.0.2",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "sinon": "^7.2.3",
+    "wct-mocha": "^1.0.0"
   },
-  "private": false,
-  "main": "prism-highlight.html",
+  "main": "prism-highlight.js",
   "scripts": {
     "lint": "polymer lint prism-highlight.html",
     "test-sauce": "polymer test --plugin sauce --job-name \"prism-highlight:local-test\"",
     "test": "polymer test --plugin local",
     "update-types": "gen-typescript-declarations --deleteExisting --outDir ."
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/advanced-rest-client/prism-highlight.git"
+  "contributors": [
+    "Pawel Psztyc",
+    "The Advanced REST client authors <arc@mulesoft.com>"
+  ],
+  "dependencies": {
+    "@polymer/polymer": "^3.0.0",
+    "@polymer/prism-element": "^3.0.0",
+    "@polymer/paper-button": "^3.0.0",
+    "@polymer/paper-progress": "^3.0.0"
   }
 }

@@ -3,120 +3,85 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../web-component-tester/browser.js"></script>
-    <script src="../../iron-test-helpers/mock-interactions.js"></script>
-    <link rel="import" href="../prism-highlight.html">
+
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../node_modules/@polymer/test-fixture/test-fixture.js"></script>
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script src="../node_modules/chai/chai.js"></script>
+    <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
+
   </head>
   <body>
 
-    <test-fixture id="Basic">
+    <test-fixture id="Markdown">
       <template>
         <prism-highlight lang="markdown"></prism-highlight>
       </template>
     </test-fixture>
 
-    <test-fixture id="Throttling">
+    <test-fixture id="Json">
       <template>
-        <prism-highlight lang="markdown" max-read="10"></prism-highlight>
+        <prism-highlight lang="json"></prism-highlight>
       </template>
     </test-fixture>
 
-    <script>
+    <test-fixture id="Xml">
+      <template>
+        <prism-highlight lang="xml"></prism-highlight>
+      </template>
+    </test-fixture>
+
+    <script type="module">
+    import '../prism-highlight.js';
+    import {tap} from '@polymer/iron-test-helpers/mock-interactions.js';
     const CRLF = /\r\n/g;
     function normalizeString(str) {
       return str.replace(CRLF, '\n');
     }
-    suite('markdown', () => {
-      let markdown;
-      let code = '# Test highlight\nHello world!\n';
-      code += '[link](https://domain.com)';
 
-      let parsed;
-      suiteSetup((done) => {
-        markdown = fixture('Basic');
-        markdown.addEventListener('prism-highlight-parsed', () => {
-          parsed = markdown.$.output.innerHTML;
-          done();
-        });
-        markdown.addEventListener('error', function(e) {
-          done(new Error(e.detail.message));
-        });
-        markdown.code = code;
-      });
-
-      test('Parsed result should not be empty', () => {
-        assert.isAbove(parsed.length, 0);
-      });
-
-      test('Should recognize the title', () => {
-        const index = parsed.indexOf('token title');
-        assert.isAbove(index, 0);
-      });
-
-      test('Should recognize the link', () => {
-        const index = parsed.indexOf('url-link');
-        assert.isAbove(index, 0);
-      });
-    });
-
-    suite('Throttling', () => {
-      let markdown;
-      let code = '# Test highlight\nHello world!\n\n';
-      for (let i = 0; i < 50; i++) {
-        code += '- test code\n';
-      }
-      setup((done) => {
-        markdown = fixture('Throttling');
-        markdown.addEventListener('prism-highlight-parsed', function clb() {
-          markdown.removeEventListener('prism-highlight-parsed', clb);
-          done();
-        });
-        markdown.addEventListener('error', function(e) {
-          done(new Error(e.detail.message));
-        });
-        markdown.code = code;
-      });
-
-      test('hasMore is computed', () => {
-        assert.isTrue(markdown.hasMore);
-      });
-
-      test('Load next is rendered', () => {
-        const button = markdown.shadowRoot.querySelector('[data-action="load-next"]');
-        assert.ok(button);
-      });
-
-      test('Load all is rendered', () => {
-        const button = markdown.shadowRoot.querySelector('[data-action="load-all"]');
-        assert.ok(button);
-      });
-
-      test('Load next button loads more results', (done) => {
-        const button = markdown.shadowRoot.querySelector('[data-action="load-next"]');
-        MockInteractions.tap(button);
-        markdown.addEventListener('prism-highlight-parsed', function clb() {
-          markdown.removeEventListener('prism-highlight-parsed', clb);
+    suite('Parsing', () => {
+      test('Parses Markdown', (done) => {
+        const element = fixture('Markdown');
+        let code = '# Test highlight\nHello world!\n';
+        code += '[link](https://domain.com)';
+        element.code = code;
+        setTimeout(() => {
+          const result = element.$.output.innerHTML.trim();
+          let compare = '<span class="token title important"><span class="token punctuation">#</span>';
+          compare += ' Test highlight</span>\nHello world!\n<span class="token url">';
+          compare += '[link](<a class="token url-link" href="https://domain.com">https://domain.com</a>)</span>';
+          assert.equal(result, compare);
           done();
         });
       });
 
-      test('Has more results to display after load next', (done) => {
-        const button = markdown.shadowRoot.querySelector('[data-action="load-next"]');
-        MockInteractions.tap(button);
-        markdown.addEventListener('prism-highlight-parsed', function clb() {
-          markdown.removeEventListener('prism-highlight-parsed', clb);
-          assert.isTrue(markdown.hasMore);
+      test('Parses JSON', (done) => {
+        const element = fixture('Json');
+        const code = '{"test": "true"}';
+        element.code = code;
+        setTimeout(() => {
+          const result = element.$.output.innerHTML.trim();
+          let compare = '<span class="token punctuation">{</span><span class="token property">';
+          compare += '"test"</span><span class="token operator">:</span> <span class="token string">';
+          compare += '"true"</span><span class="token punctuation">}</span>';
+          assert.equal(result, compare);
           done();
         });
       });
 
-      test('Load all button loads all results', (done) => {
-        const button = markdown.shadowRoot.querySelector('[data-action="load-all"]');
-        MockInteractions.tap(button);
-        markdown.addEventListener('prism-highlight-parsed', function clb() {
-          markdown.removeEventListener('prism-highlight-parsed', clb);
-          assert.isFalse(markdown.hasMore);
+      test('Parses XML', (done) => {
+        const element = fixture('Xml');
+        const code = '<Person>true</Person>';
+        element.code = code;
+        setTimeout(() => {
+          const result = element.$.output.innerHTML.trim();
+          let compare = '<span class="token tag"><span class="token tag">';
+          compare += '<span class="token punctuation">&lt;</span>Person</span>';
+          compare += '<span class="token punctuation">&gt;</span></span>true';
+          compare += '<span class="token tag"><span class="token tag">';
+          compare += '<span class="token punctuation">&lt;/</span>';
+          compare += 'Person</span><span class="token punctuation">&gt;</span></span>';
+          assert.equal(result, compare);
           done();
         });
       });
@@ -127,14 +92,11 @@
       let code = '# Test highlight\nHello world!\n';
       code += '[link](https://domain.com/)';
       suiteSetup((done) => {
-        markdown = fixture('Basic');
-        markdown.addEventListener('prism-highlight-parsed', () => {
+        markdown = fixture('Markdown');
+        markdown.code = code;
+        setTimeout(() => {
           done();
         });
-        markdown.addEventListener('error', function(e) {
-          done(new Error(e.detail.message));
-        });
-        markdown.code = code;
       });
 
       test('Dispatches url-change-action custom event', (done) => {
@@ -144,32 +106,7 @@
           assert.equal(normalizeString(e.detail.url), 'https://domain.com/');
           done();
         });
-        MockInteractions.tap(anchor);
-      });
-    });
-
-    suite('Error handling', () => {
-      let markdown;
-      let code = '# Test highlight\nHello world!\n';
-      code += '[link](https://domain.com/)';
-      setup((done) => {
-        markdown = fixture('Basic');
-        markdown.addEventListener('prism-highlight-parsed', () => {
-          done();
-        });
-        markdown.addEventListener('error', function(e) {
-          done(new Error(e.detail.message));
-        });
-        markdown.code = code;
-      });
-
-      test('Renders error message', () => {
-        markdown._renderWorkerError();
-        const info = markdown.shadowRoot.querySelector('.worker-error');
-        assert.ok(info);
-        const raw = markdown.shadowRoot.querySelector('.raw-content');
-        assert.ok(raw);
-        assert.equal(normalizeString(raw.innerText), code);
+        tap(anchor);
       });
     });
     </script>

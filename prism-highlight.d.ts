@@ -5,14 +5,16 @@
  *   https://github.com/Polymer/tools/tree/master/packages/gen-typescript-declarations
  *
  * To modify these typings, edit the source file(s):
- *   prism-highlight.html
+ *   prism-highlight.js
  */
 
-/// <reference path="../polymer/types/polymer-element.d.ts" />
-/// <reference path="../paper-button/paper-button.d.ts" />
-/// <reference path="../paper-progress/paper-progress.d.ts" />
-/// <reference path="../prism-element/prism-import.d.ts" />
-/// <reference path="prism-styles.d.ts" />
+
+// tslint:disable:variable-name Describing an API that's defined elsewhere.
+// tslint:disable:no-any describes the API as best we are able today
+
+import {PolymerElement} from '@polymer/polymer/polymer-element.js';
+
+import {html} from '@polymer/polymer/lib/utils/html-tag.js';
 
 declare namespace UiElements {
 
@@ -34,18 +36,13 @@ declare namespace UiElements {
    * The element is set to commit changes after this persiod. Otherwise it may display
    * old and new code due to the asynchronius nature of the code highligter.
    *
-   * **Note** This element uses web workers with dependencies. It expect to find
-   * workers files in current directory in the `workers` folder.
-   * Your build process has to ensure that this files will be avaiable.
+   * ## Changes in version 4
    *
-   * Also this element expects the prism scripts to be available in the same
-   * root folder as this element is (like bower_components).
+   * The component supports only few syntax highlighting by default. It won't
+   * load other languages at runtime.The component consumer has to download definition
+   * before highlighting the code.
    *
-   * ### Required scripts
-   *
-   * - ../prism/prism.js
-   * - ../prism/plugins/autolinker/prism-autolinker.min.js
-   * - ../prism/components/*
+   * The component no longer uses Web Workers.
    *
    * ### Styling
    *
@@ -57,7 +54,7 @@ declare namespace UiElements {
    * `--prism-highlight-code` | Mixin applied to the `<pre>` element | `{}`
    * `--error-color` | Color of the error message when script error ocurred in the worker | ``
    */
-  class PrismHighlight extends Polymer.Element {
+  class PrismHighlight extends PolymerElement {
 
     /**
      * A data to be highlighted and dispayed.
@@ -70,44 +67,24 @@ declare namespace UiElements {
     lang: string|null|undefined;
 
     /**
-     * A list of tokenized code.
-     * It's a result of calling `Prism.tokenize` function.
-     */
-    readonly tokenized: any[]|null|undefined;
-
-    /**
-     * True if not all data has been displayed in the display.
-     */
-    readonly hasMore: boolean|null|undefined;
-
-    /**
-     * A number of Prism tokens to process at once.
-     * Note, that elements like paragraphs, list items etc consists of
-     * two tokens: description and content while regular text can be
-     * consoisted of single token.
+     * Adds languages outside of the core Prism languages.
      *
-     * After the limit is reached the display shows "load next
-     * [maxRead] items" and "load all" buttons.
+     * Prism includes a few languages in the core library:
+     *   - JavaScript
+     *   - Markup
+     *   - CSS
+     *   - C-Like
+     * Use this property to extend the core set with other Prism
+     * components and custom languages.
+     *
+     * Example:
+     *   ```
+     *   <!-- with languages = {'custom': myCustomPrismLang}; -->
+     *   <!-- or languages = Prism.languages; -->
+     *   <prism-highlighter languages="[[languages]]"></prism-highlighter>
+     *   ```
      */
-    maxRead: number|null|undefined;
-
-    /**
-     * True when parsing code or tokens to HTML code.
-     */
-    readonly working: boolean|null|undefined;
-
-    /**
-     * A web worker instance that parses the syntax
-     */
-    readonly worker: object|null|undefined;
-
-    /**
-     * Number of miliseconds after which the tokenize task fail sending
-     * `prism-highlight-timeout` event.
-     * Set to "falsy" value to remove timeout.
-     */
-    tokenizeTimeout: number|null|undefined;
-    detached(): void;
+    languages: object;
 
     /**
      * Resets the state of the display to initial state.
@@ -116,79 +93,12 @@ declare namespace UiElements {
 
     /**
      * Hightligt the code.
-     */
-    _highlight(code: any, lang: any): void;
-
-    /**
-     * Sends message to the hightligt worker if its already created.
-     * If not, this will create worker and then post message.
      *
-     * @param message An object to pass to the worker.
+     * @param code The code to be highlighted
+     * @param lang Mime type to be used to recognize the language.
      */
-    _runWorker(message: object|null): void;
-
-    /**
-     * Clears the tokenize timeout if set.
-     */
-    _clearTokenizeTimeout(): void;
-
-    /**
-     * Creates an instance of a web worker.
-     * It does nothing if the worker is already created.
-     */
-    _registerWorker(): void;
-
-    /**
-     * Terminates the worker (if exists) and removes event listeners
-     */
-    _unregisterWorker(): void;
-
-    /**
-     * Handler for the worker `message` event
-     */
-    _onWorkerData(e: Event|null): void;
-
-    /**
-     * Renders fallback view when there was a script error in the worker.
-     */
-    _renderWorkerError(): void;
-
-    /**
-     * Dispatches `error` event
-     */
-    _notifyError(e: Error|null): void;
-
-    /**
-     * Handler for worker error.
-     */
-    _onWorkerError(e: Error|null): void;
-
-    /**
-     * Handler for worker function after code tokenization.
-     *
-     * @param tokens An array of tokens returnet by Prism.
-     */
-    _onTokenized(tokens: any[]|null): void;
-
-    /**
-     * Display next tokens from `this.tokenized` list - up to `this.maxRead`
-     * elements. If after running this function the `this.tokenized`
-     * array is empty it will be set to undefined.
-     */
-    _loadNext(): void;
-    _loadAll(): void;
-
-    /**
-     * Display a HTML code generated by Prism.
-     *
-     * @param html HTML code to be displayed.
-     */
-    _display(html: String|null): void;
-
-    /**
-     * Computes if the element has more data to display.
-     */
-    _computeHasMore(tokenized: any): any;
+    _highlight(code: String|null, lang: String|null): void;
+    _tokenize(code: any, lang: any): void;
 
     /**
      * Handler for click events.
@@ -197,13 +107,18 @@ declare namespace UiElements {
     _handleLinks(e: ClickEvent|null): void;
 
     /**
-     * Called when the tokenize task exceeds timeout set in the `tokenizeTimeout`
-     * property
+     * Picks a Prism formatter based on the `lang` hint and `code`.
+     *
+     * @param code The source being highlighted.
+     * @param lang A language hint (e.g. ````LANG`).
      */
-    _onTokenizeTimeout(): void;
+    _detectLang(code: string, lang?: string): Prism.Lang;
   }
 }
 
-interface HTMLElementTagNameMap {
-  "prism-highlight": UiElements.PrismHighlight;
+declare global {
+
+  interface HTMLElementTagNameMap {
+    "prism-highlight": UiElements.PrismHighlight;
+  }
 }

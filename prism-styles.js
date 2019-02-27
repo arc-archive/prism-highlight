@@ -1,4 +1,5 @@
-<dom-module id="prism-styles">
+const $_documentContainer = document.createElement('template');
+$_documentContainer.innerHTML = `<dom-module id="prism-styles">
   <template>
     <style>
     /**
@@ -144,4 +145,6 @@
     }
     </style>
   </template>
-</dom-module>
+</dom-module>`;
+
+document.head.appendChild($_documentContainer.content);

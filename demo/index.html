@@ -5,10 +5,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
   <title>prism-highlight demo</title>
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-  <link rel="import" href="../prism-highlight.html">
+
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script type="module" src="../../../@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
+  <script type="module" src="../../../@polymer/iron-demo-helpers/demo-snippet.js"></script>
+  <script type="module" src="../prism-highlight.js"></script>
+
   <custom-style>
     <style is="custom-style" include="demo-pages-shared-styles">
     :root {
@@ -19,7 +21,7 @@
 </head>
 <body unresolved>
   <div class="vertical-section-container centered">
-    <h3>The `prism-highlight` - markdown</h3>
+    <h3>The prism-highlight - markdown</h3>
     <demo-snippet>
       <template>
         <prism-highlight id="c1" lang="markdown"></prism-highlight>
@@ -28,7 +30,26 @@
         </script>
       </template>
     </demo-snippet>
-    <h3>The `prism-highlight` - javascript</h3>
+    <h3>The prism-highlight - JSON</h3>
+    <demo-snippet>
+      <template>
+        <prism-highlight id="cJson" lang="json"></prism-highlight>
+        <script>
+        document.querySelector('#cJson').code = '{\n\t"name": "Pawel Psztyc",\n\t"occupation": "Software Engineer"\n}';
+        </script>
+      </template>
+    </demo-snippet>
+    <h3>The prism-highlight - XML</h3>
+    <demo-snippet>
+      <template>
+        <prism-highlight id="cXml" lang="xml"></prism-highlight>
+        <script>
+        document.querySelector('#cXml').code =
+          '<Person valid="true">\n\t<name>Pawel Psztyc</name>\n\t<occupation>Software Engineer</occupation>\n</Person>';
+        </script>
+      </template>
+    </demo-snippet>
+    <h3>The prism-highlight - javascript</h3>
     <demo-snippet>
       <template>
         <prism-highlight id="c2" lang="javascript"></prism-highlight>
@@ -40,7 +61,7 @@
         </script>
       </template>
     </demo-snippet>
-    <h3>The `prism-highlight` - long text</h3>
+    <h3>The prism-highlight - HTML</h3>
     <demo-snippet>
       <template>
         <prism-highlight id="c3" lang="markup" max-read="50"></prism-highlight>
@@ -53,6 +74,12 @@
       </template>
     </demo-snippet>
   </div>
+  <script type="module">
+  fetch(location.href)
+  .then((r) => r.text())
+  .then((r) => document.querySelector('#c3').code = r + '\n')
+  .catch((e) => document.querySelector('#c3').code = e.message);
+  </script>
 </body>
 
 </html>
