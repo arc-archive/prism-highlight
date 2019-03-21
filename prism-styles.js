@@ -1,5 +1,5 @@
-const $_documentContainer = document.createElement('template');
-$_documentContainer.innerHTML = `<dom-module id="prism-styles">
+const $documentContainer = document.createElement('template');
+$documentContainer.innerHTML = `<dom-module id="prism-styles">
   <template>
     <style>
     /**
@@ -20,8 +20,8 @@ $_documentContainer.innerHTML = `<dom-module id="prism-styles">
       hyphens: auto;
       background-color: var(--prism-container-background-color);
       display: block;
-      @apply --arc-font-code1;
-      @apply --prism-container;
+      font-family: var(--arc-font-code-family, monospace);
+      font-size: var(--arc-font-code-font-size, 10pt);
     }
 
     pre[class*="language-"]::-moz-selection,
@@ -147,4 +147,4 @@ $_documentContainer.innerHTML = `<dom-module id="prism-styles">
   </template>
 </dom-module>`;
 
-document.head.appendChild($_documentContainer.content);
+document.head.appendChild($documentContainer.content);

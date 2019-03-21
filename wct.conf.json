@@ -59,7 +59,6 @@
       ]
     },
     "@advanced-rest-client/wct-istanbub": {
-      "disabled": true,
       "dir": "./coverage",
       "reporters": [
         "text-summary",

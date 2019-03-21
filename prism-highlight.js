@@ -11,13 +11,13 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 */
-import {PolymerElement} from '@polymer/polymer/polymer-element.js';
-import {html} from '@polymer/polymer/lib/utils/html-tag.js';
-import '@polymer/prism-element/prism-import.js';
-import 'prismjs/components/prism-json.min.js';
-import 'prismjs/components/prism-markdown.min.js';
-import 'prismjs/components/prism-yaml.min.js';
-import 'prismjs/plugins/autolinker/prism-autolinker.js';
+import {PolymerElement} from '../../@polymer/polymer/polymer-element.js';
+import {html} from '../../@polymer/polymer/lib/utils/html-tag.js';
+import '../../prismjs/prism.js';
+import '../../prismjs/components/prism-json.min.js';
+import '../../prismjs/components/prism-markdown.min.js';
+import '../../prismjs/components/prism-yaml.min.js';
+import '../../prismjs/plugins/autolinker/prism-autolinker.js';
 import './prism-styles.js';
 /* global Prism */
 /**
@@ -189,14 +189,33 @@ class PrismHighlight extends PolymerElement {
     e.preventDefault();
     e.stopPropagation();
     e.stopImmediatePropagation();
+    const url = el.href;
+    if (newEntity) {
+      this._dispatchNewRequest(url);
+    } else {
+      this._dispatchChangeUrl(url);
+    }
+  }
+  _dispatchChangeUrl(url) {
     this.dispatchEvent(new CustomEvent('url-change-action', {
-      cancelable: true,
-      bubbles: true,
-      composed: true,
       detail: {
-        url: el.href,
-        asNew: newEntity
-      }
+        url
+      },
+      bubbles: true,
+      cancelable: true,
+      composed: true
+    }));
+  }
+
+  _dispatchNewRequest(url) {
+    this.dispatchEvent(new CustomEvent('request-workspace-append', {
+      detail: {
+        kind: 'ARC#Request',
+        request: {url}
+      },
+      bubbles: true,
+      cancelable: true,
+      composed: true
     }));
   }
   /**
