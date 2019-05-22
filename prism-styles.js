@@ -56,7 +56,7 @@ $documentContainer.innerHTML = `<dom-module id="prism-styles">
 
     :not(pre) > code[class*="language-"],
     pre[class*="language-"] {
-      background: #f5f2f0;
+      background: var(--prism-container-pre-background-color, #f5f2f0);
     }
     /* Inline code */
 
@@ -70,7 +70,7 @@ $documentContainer.innerHTML = `<dom-module id="prism-styles">
     .token.prolog,
     .token.doctype,
     .token.cdata {
-      color: slategray;
+      color: var(--code-token-comment-value-color, slategray);
     }
 
     .token.punctuation {
@@ -111,8 +111,8 @@ $documentContainer.innerHTML = `<dom-module id="prism-styles">
     .token.url,
     .language-css .token.string,
     .style .token.string {
-      color: #a67f59;
-      background: hsla(0, 0%, 100%, .5);
+      color: var(--code-operator-value-color, #a67f59);
+      background: var(--code-operator-value-background-color, hsla(0, 0%, 100%, .5));
     }
 
     .token.atrule,
