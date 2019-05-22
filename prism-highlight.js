@@ -88,8 +88,7 @@ class PrismHighlight extends PolymerElement {
       color: inherit;
     }
     </style>
-    <pre class="parsed-content"><code id="output" class="language-" on-click="_handleLinks"></code></pre>
-`;
+    <pre class="parsed-content"><code id="output" class="language-" on-click="_handleLinks"></code></pre>`;
   }
 
   static get is() {
