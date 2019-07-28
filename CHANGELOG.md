@@ -226,3 +226,7 @@
 
 
 
+# [4.0.0](https://github.com/advanced-rest-client/prism-highlight/compare/2.1.10...4.0.0) (2019-07-28)
+
+
+
