@@ -6,41 +6,36 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
   <title>prism-highlight demo</title>
 
-  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
-  <script type="module" src="../../../@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
-  <script type="module" src="../../../@polymer/iron-demo-helpers/demo-snippet.js"></script>
-  <script type="module" src="../prism-highlight.js"></script>
-
-  <custom-style>
-    <style is="custom-style" include="demo-pages-shared-styles">
-    :root {
+  <style>
+    html {
       --error-color: red;
     }
-    </style>
-  </custom-style>
+  </style>
 </head>
-<body unresolved>
+<body>
   <div class="vertical-section-container centered">
     <h3>The prism-highlight - markdown</h3>
-    <demo-snippet>
+    <arc-demo-helper>
       <template>
         <prism-highlight id="c1" lang="markdown"></prism-highlight>
         <script>
         document.querySelector('#c1').code = '# Test highlight\nHello world!\n[link](https://domain.com)';
         </script>
       </template>
-    </demo-snippet>
+    </arc-demo-helper>
+    
     <h3>The prism-highlight - JSON</h3>
-    <demo-snippet>
+    <arc-demo-helper>
       <template>
         <prism-highlight id="cJson" lang="json"></prism-highlight>
         <script>
         document.querySelector('#cJson').code = '{\n\t"name": "Pawel Psztyc",\n\t"occupation": "Software Engineer"\n}';
         </script>
       </template>
-    </demo-snippet>
+    </arc-demo-helper>
+
     <h3>The prism-highlight - XML</h3>
-    <demo-snippet>
+    <arc-demo-helper>
       <template>
         <prism-highlight id="cXml" lang="xml"></prism-highlight>
         <script>
@@ -48,9 +43,9 @@
           '<Person valid="true">\n\t<name>Pawel Psztyc</name>\n\t<occupation>Software Engineer</occupation>\n</Person>';
         </script>
       </template>
-    </demo-snippet>
+    </arc-demo-helper>
     <h3>The prism-highlight - javascript</h3>
-    <demo-snippet>
+    <arc-demo-helper>
       <template>
         <prism-highlight id="c2" lang="javascript"></prism-highlight>
         <script>
@@ -60,9 +55,10 @@
           '}';
         </script>
       </template>
-    </demo-snippet>
+    </arc-demo-helper>
+
     <h3>The prism-highlight - HTML</h3>
-    <demo-snippet>
+    <arc-demo-helper>
       <template>
         <prism-highlight id="c3" lang="markup" max-read="50"></prism-highlight>
         <script>
@@ -72,14 +68,10 @@
         .catch((e) => document.querySelector('#c3').code = e.message);
         </script>
       </template>
-    </demo-snippet>
+    </arc-demo-helper>
   </div>
-  <script type="module">
-  fetch(location.href)
-  .then((r) => r.text())
-  .then((r) => document.querySelector('#c3').code = r + '\n')
-  .catch((e) => document.querySelector('#c3').code = e.message);
-  </script>
+
+  <script type="module" src="./index.js"></script>
 </body>
 
 </html>

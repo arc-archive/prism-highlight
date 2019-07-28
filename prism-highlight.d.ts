@@ -12,9 +12,7 @@
 // tslint:disable:variable-name Describing an API that's defined elsewhere.
 // tslint:disable:no-any describes the API as best we are able today
 
-import {PolymerElement} from '@polymer/polymer/polymer-element.js';
-
-import {html} from '@polymer/polymer/lib/utils/html-tag.js';
+import {LitElement, html, css} from 'lit-element';
 
 declare namespace UiElements {
 
@@ -54,7 +52,7 @@ declare namespace UiElements {
    * `--prism-highlight-code` | Mixin applied to the `<pre>` element | `{}`
    * `--error-color` | Color of the error message when script error ocurred in the worker | ``
    */
-  class PrismHighlight extends PolymerElement {
+  class PrismHighlight extends LitElement {
 
     /**
      * A data to be highlighted and dispayed.
@@ -65,6 +63,7 @@ declare namespace UiElements {
      * Prism supported language.
      */
     lang: string|null|undefined;
+    readonly _output: any;
 
     /**
      * Adds languages outside of the core Prism languages.
@@ -85,6 +84,9 @@ declare namespace UiElements {
      *   ```
      */
     languages: object;
+    constructor();
+    firstUpdated(): void;
+    render(): any;
 
     /**
      * Resets the state of the display to initial state.
@@ -93,11 +95,8 @@ declare namespace UiElements {
 
     /**
      * Hightligt the code.
-     *
-     * @param code The code to be highlighted
-     * @param lang Mime type to be used to recognize the language.
      */
-    _highlight(code: String|null, lang: String|null): void;
+    _highlight(): void;
     _tokenize(code: any, lang: any): void;
 
     /**
@@ -105,6 +104,8 @@ declare namespace UiElements {
      * It dispatches `url-change-action` custom event when a link is clicked.
      */
     _handleLinks(e: ClickEvent|null): void;
+    _dispatchChangeUrl(url: any): void;
+    _dispatchNewRequest(url: any): void;
 
     /**
      * Picks a Prism formatter based on the `lang` hint and `code`.

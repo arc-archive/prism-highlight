@@ -45,6 +45,23 @@ npm install --save @advanced-rest-client/prism-highlight
 </html>
 ```
 
+### In a LitElement template
+
+```js
+import { LitElement, html } from 'lit-element';
+import '@advanced-rest-client/prism-highlight/prism-highlight.js';
+
+class SampleElement extends LitElement {
+
+  render() {
+    return html`
+    <prism-highlight .code="${this.code}" .lang="${this.lang}"></prism-highlight>
+    `;
+  }
+}
+customElements.define('sample-element', SampleElement);
+```
+
 ### In a Polymer 3 element
 
 ```js
@@ -57,37 +74,31 @@ class SampleElement extends PolymerElement {
     <prism-highlight></prism-highlight>
     `;
   }
-
-  _authChanged(e) {
-    console.log(e.detail);
-  }
 }
 customElements.define('sample-element', SampleElement);
 ```
 
-### Installation
+### Development
 
 ```sh
 git clone https://github.com/advanced-rest-client/prism-highlight
-cd api-url-editor
+cd prism-highlight
 npm install
-npm install -g polymer-cli
 ```
 
 ### Running the demo locally
 
 ```sh
-polymer serve --npm
-open http://127.0.0.1:<port>/demo/
+npm start
 ```
 
 ### Running the tests
 ```sh
-polymer test --npm
+npm test
 ```
 
 ## Changes in version 4
 
-The component supports only few syntax highlighting by default. It won't load other languages at runtime.The component consumer has to download definition before highlighting the code.
-
-The component no longer uses Web Workers.
+-   The component supports only few syntax highlighting by default. It won't load other languages at runtime. The component consumer has to download definition before highlighting the code.
+-   The component no longer uses Web Workers.
+-   Replaced Polymer with LitElement

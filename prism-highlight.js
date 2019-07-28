@@ -11,14 +11,13 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 */
-import {PolymerElement} from '../../@polymer/polymer/polymer-element.js';
-import {html} from '../../@polymer/polymer/lib/utils/html-tag.js';
-import '../../prismjs/prism.js';
-import '../../prismjs/components/prism-json.min.js';
-import '../../prismjs/components/prism-markdown.min.js';
-import '../../prismjs/components/prism-yaml.min.js';
-import '../../prismjs/plugins/autolinker/prism-autolinker.js';
-import './prism-styles.js';
+import { LitElement, html, css } from 'lit-element';
+import 'prismjs/prism.js';
+import 'prismjs/components/prism-json.min.js';
+import 'prismjs/components/prism-markdown.min.js';
+import 'prismjs/components/prism-yaml.min.js';
+import 'prismjs/plugins/autolinker/prism-autolinker.js';
+import styles from './prism-styles.js';
 /* global Prism */
 /**
  * Syntax highlighting via Prism
@@ -61,38 +60,40 @@ import './prism-styles.js';
  * @demo demo/index.html
  * @memberof UiElements
  */
-class PrismHighlight extends PolymerElement {
-  static get template() {
-    return html`
-    <style include="prism-styles">
-    :host {
-      display: block;
-      @apply --prism-highlight;
-    }
+class PrismHighlight extends LitElement {
+  static get styles() {
+    return css`
+      :host {
+        display: block;
+      }
 
-    pre {
-      -webkit-user-select: text;
-      margin: 8px;
-      @apply --prism-highlight-code;
-    }
+      pre {
+        user-select: text;
+        margin: 8px;
+      }
 
-    paper-progress {
-      width: 100%;
-    }
+      paper-progress {
+        width: 100%;
+      }
 
-    .worker-error {
-      color: var(--error-color);
-    }
+      .worker-error {
+        color: var(--error-color);
+      }
 
-    .token a {
-      color: inherit;
-    }
-    </style>
-    <pre class="parsed-content"><code id="output" class="language-" on-click="_handleLinks"></code></pre>`;
+      .token a {
+        color: inherit;
+      }
+
+      ${styles}
+    `;
   }
 
-  static get is() {
-    return 'prism-highlight';
+  render() {
+    return html`
+      <pre class="parsed-content">
+      <code id="output" class="language-" @click="${this._handleLinks}"></code>
+    </pre>
+    `;
   }
 
   static get properties() {
@@ -100,11 +101,11 @@ class PrismHighlight extends PolymerElement {
       /**
        * A data to be highlighted and dispayed.
        */
-      code: String,
+      code: { type: String },
       /**
        * Prism supported language.
        */
-      lang: String,
+      lang: { type: String },
       /**
        * Adds languages outside of the core Prism languages.
        *
@@ -126,28 +127,67 @@ class PrismHighlight extends PolymerElement {
        * @attribute languages
        * @type {!Object}
        */
-      languages: {
-        type: Object,
-        value: function() {
-          return {};
-        }
-      }
+      languages: { type: Object }
     };
   }
 
-  static get observers() {
-    return ['_highlight(code, lang)'];
+  get code() {
+    return this._code;
   }
+
+  set code(value) {
+    const old = this._code;
+    /* istanbul ignore if */
+    if (old === value) {
+      return;
+    }
+    this._code = value;
+    this._highlight();
+  }
+
+  get lang() {
+    return this._lang;
+  }
+
+  set lang(value) {
+    const old = this._lang;
+    /* istanbul ignore if */
+    if (old === value) {
+      return;
+    }
+    this._lang = value;
+    this._highlight();
+  }
+
+  get _output() {
+    return this.shadowRoot.querySelector('code');
+  }
+
+  constructor() {
+    super();
+    this.languages = {};
+  }
+
+  firstUpdated() {
+    /* istanbul ignore if */
+    if (this.__results) {
+      this._output.innerHTML += this.__results;
+      this.__results = undefined;
+    }
+  }
+
   // Resets the state of the display to initial state.
   reset() {
-    this.$.output.innerHTML = '';
+    const node = this._output;
+    if (node) {
+      node.innerHTML = '';
+    }
   }
   /**
    * Hightligt the code.
-   * @param {String} code The code to be highlighted
-   * @param {String} lang Mime type to be used to recognize the language.
    */
-  _highlight(code, lang) {
+  _highlight() {
+    const { code, lang } = this;
     if (!code || !lang) {
       return;
     }
@@ -171,7 +211,16 @@ class PrismHighlight extends PolymerElement {
     };
     Prism.hooks.run('before-highlight', env);
     const result = Prism.highlight(code, grammar, lang);
-    this.$.output.innerHTML += result;
+    const node = this._output;
+    /* istanbul ignore else */
+    if (node) {
+      node.innerHTML += result;
+    } else {
+      if (!this.__results) {
+        this.__results = '';
+      }
+      this.__results += result;
+    }
   }
   /**
    * Handler for click events.
@@ -196,26 +245,30 @@ class PrismHighlight extends PolymerElement {
     }
   }
   _dispatchChangeUrl(url) {
-    this.dispatchEvent(new CustomEvent('url-change-action', {
-      detail: {
-        url
-      },
-      bubbles: true,
-      cancelable: true,
-      composed: true
-    }));
+    this.dispatchEvent(
+      new CustomEvent('url-change-action', {
+        detail: {
+          url
+        },
+        bubbles: true,
+        cancelable: true,
+        composed: true
+      })
+    );
   }
 
   _dispatchNewRequest(url) {
-    this.dispatchEvent(new CustomEvent('request-workspace-append', {
-      detail: {
-        kind: 'ARC#Request',
-        request: {url}
-      },
-      bubbles: true,
-      cancelable: true,
-      composed: true
-    }));
+    this.dispatchEvent(
+      new CustomEvent('request-workspace-append', {
+        detail: {
+          kind: 'ARC#Request',
+          request: { url }
+        },
+        bubbles: true,
+        cancelable: true,
+        composed: true
+      })
+    );
   }
   /**
    * Picks a Prism formatter based on the `lang` hint and `code`.
@@ -261,4 +314,4 @@ class PrismHighlight extends PolymerElement {
    * @event prism-highlight-parsed
    */
 }
-window.customElements.define(PrismHighlight.is, PrismHighlight);
+window.customElements.define('prism-highlight', PrismHighlight);
