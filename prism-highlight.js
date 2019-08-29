@@ -72,10 +72,6 @@ class PrismHighlight extends LitElement {
         margin: 8px;
       }
 
-      paper-progress {
-        width: 100%;
-      }
-
       .worker-error {
         color: var(--error-color);
       }
