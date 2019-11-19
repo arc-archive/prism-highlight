@@ -61,7 +61,7 @@ import styles from './prism-styles.js';
  * @memberof UiElements
  */
 class PrismHighlight extends LitElement {
-  static get styles() {
+   get styles() {
     return css`
       :host {
         display: block;
@@ -85,7 +85,7 @@ class PrismHighlight extends LitElement {
   }
 
   render() {
-    return html`
+    return html`<style>${this.styles}</style>
       <pre class="parsed-content">
       <code id="output" class="language-" @click="${this._handleLinks}"></code>
     </pre>
