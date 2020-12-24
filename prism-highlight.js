@@ -1,3 +1,5 @@
+/* eslint-disable lit-a11y/click-events-have-key-events */
+/* eslint-disable class-methods-use-this */
 /**
 @license
 Copyright 2018 The Advanced REST Client authors
@@ -34,8 +36,8 @@ import styles from './prism-styles.js';
  * The `lang` attribute is required and the component will not start parsing data without it.
  *
  * Changing the `lang` and `code` properties together, do it in less than 10 ms.
- * The element is set to commit changes after this persiod. Otherwise it may display
- * old and new code due to the asynchronius nature of the code highligter.
+ * The element is set to commit changes after this time period. Otherwise it may display
+ * old and new code due to the asynchronous nature of the code highlighter.
  *
  * ## Changes in version 4
  *
@@ -95,7 +97,7 @@ class PrismHighlight extends LitElement {
   static get properties() {
     return {
       /**
-       * A data to be highlighted and dispayed.
+       * A data to be highlighted and rendered.
        */
       code: { type: String },
       /**
@@ -179,8 +181,9 @@ class PrismHighlight extends LitElement {
       node.innerHTML = '';
     }
   }
+  
   /**
-   * Hightligt the code.
+   * Highlights the code.
    */
   _highlight() {
     const { code, lang } = this;
@@ -201,7 +204,7 @@ class PrismHighlight extends LitElement {
   _tokenize(code, lang) {
     const grammar = this._detectLang(code, lang);
     const env = {
-      code: code,
+      code,
       grammar,
       language: lang
     };
@@ -218,6 +221,7 @@ class PrismHighlight extends LitElement {
       this.__results += result;
     }
   }
+
   /**
    * Handler for click events.
    * It dispatches `url-change-action` custom event when a link is clicked.
@@ -240,6 +244,7 @@ class PrismHighlight extends LitElement {
       this._dispatchChangeUrl(url);
     }
   }
+
   _dispatchChangeUrl(url) {
     this.dispatchEvent(
       new CustomEvent('url-change-action', {
@@ -266,6 +271,7 @@ class PrismHighlight extends LitElement {
       })
     );
   }
+
   /**
    * Picks a Prism formatter based on the `lang` hint and `code`.
    *
@@ -281,7 +287,8 @@ class PrismHighlight extends LitElement {
     }
     if (this.languages[lang]) {
       return this.languages[lang];
-    } else if (Prism.languages[lang]) {
+    } 
+    if (Prism.languages[lang]) {
       return Prism.languages[lang];
     }
     switch (lang.substr(0, 2)) {
@@ -296,6 +303,7 @@ class PrismHighlight extends LitElement {
         return Prism.languages.markup;
     }
   }
+
   /**
    * An event fired when the user clicked on any link in the response
    * panels or the headers

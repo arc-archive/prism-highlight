@@ -31,8 +31,8 @@ declare namespace UiElements {
    * The `lang` attribute is required and the component will not start parsing data without it.
    *
    * Changing the `lang` and `code` properties together, do it in less than 10 ms.
-   * The element is set to commit changes after this persiod. Otherwise it may display
-   * old and new code due to the asynchronius nature of the code highligter.
+   * The element is set to commit changes after this time period. Otherwise it may display
+   * old and new code due to the asynchronous nature of the code highlighter.
    *
    * ## Changes in version 4
    *
@@ -55,7 +55,7 @@ declare namespace UiElements {
   class PrismHighlight extends LitElement {
 
     /**
-     * A data to be highlighted and dispayed.
+     * A data to be highlighted and rendered.
      */
     code: string|null|undefined;
 
@@ -94,7 +94,7 @@ declare namespace UiElements {
     reset(): void;
 
     /**
-     * Hightligt the code.
+     * Highlights the code.
      */
     _highlight(): void;
     _tokenize(code: any, lang: any): void;
