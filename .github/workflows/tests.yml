@@ -40,8 +40,8 @@ jobs:
         run: npm ci
       - name: Run tests
         run: npm test
-  release:
-    name: "Github Release"
+  tag:
+    name: "Publishing tag"
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     needs: 
       - test_linux
@@ -55,18 +55,10 @@ jobs:
       - name: Read node from package.json
         uses: culshaw/read-package-node-version-actions@v1
         id: package-node-version
-      - name: Changelog
-        uses: scottbrenner/generate-changelog-action@master
-        id: Changelog
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publishing tag
+        id: publish_tag
+        uses: tvdias/github-tagger@v0.0.2
         with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
           tag: v${{ steps.package-node-version.outputs.version }}
-          release_name: Release ${{ steps.package-node-version.outputs.version }}
-          body: |
-            ${{ steps.Changelog.outputs.changelog }}
-          draft: false
-          prerelease: false
+          commit-sha: ${{ github.sha }}
