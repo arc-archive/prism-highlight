@@ -7,8 +7,8 @@ on:
   push:
   pull_request:
     branches:
-      - stage
       - master
+      - main
 jobs:
   test_linux:
     name: ${{ matrix.os }} (${{ matrix.browser }})
@@ -40,3 +40,33 @@ jobs:
         run: npm ci
       - name: Run tests
         run: npm test
+  release:
+    name: "Github Release"
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    needs: 
+      - test_linux
+      - test_win
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Read node from package.json
+        uses: culshaw/read-package-node-version-actions@v1
+        id: package-node-version
+      - name: Changelog
+        uses: scottbrenner/generate-changelog-action@master
+        id: Changelog
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.package-node-version.outputs.version }}
+          release_name: Release ${{ steps.package-node-version.outputs.version }}
+          body: |
+            ${{ steps.Changelog.outputs.changelog }}
+          draft: false
+          prerelease: false
