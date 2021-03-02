@@ -1,4 +1,4 @@
-name: tests
+name: Tests and GH release
 
 env:
   FORCE_COLOR: 1
