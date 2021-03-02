@@ -9,7 +9,7 @@ on:
       - main
 jobs:
   test_linux:
-    name: ${{ matrix.os }} (${{ matrix.browser }})
+    name: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
