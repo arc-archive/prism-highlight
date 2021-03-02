@@ -64,7 +64,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.package-node-version.outputs.version }}
+          tag: v${{ steps.package-node-version.outputs.version }}
           release_name: Release ${{ steps.package-node-version.outputs.version }}
           body: |
             ${{ steps.Changelog.outputs.changelog }}
