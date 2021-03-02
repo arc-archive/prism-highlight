@@ -2,6 +2,9 @@ on:
   push:
     tags:
       - '**'
+  create:
+    tags:
+      - '**'
 name: Create Release
 jobs:
   build:
