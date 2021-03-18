@@ -4,11 +4,11 @@
     {
       "name": "prism-highlight",
       "path": "./prism-highlight.js",
-      "description": "Syntax highlighting via Prism\n\n### Example\n\n```html\n<prism-highlight id=\"c1\" lang=\"markdown\"></prism-highlight>\n<script>\n  document.querySelector('#c1').code = '# Test highlight';\n&lt;/script>\n```\n\nThe `lang` attribute is required and the component will not start parsing data without it.\n\nChanging the `lang` and `code` properties together, do it in less than 10 ms.\nThe element is set to commit changes after this persiod. Otherwise it may display\nold and new code due to the asynchronius nature of the code highligter.\n\n## Changes in version 4\n\nThe component supports only few syntax highlighting by default. It won't\nload other languages at runtime.The component consumer has to download definition\nbefore highlighting the code.\n\nThe component no longer uses Web Workers.\n\n### Styling\n\n`<prism-highlight>` provides the following custom properties and mixins for styling:\n\nCustom property | Description | Default\n----------------|-------------|----------\n`--prism-highlight` | Mixin applied to the element | `{}`\n`--prism-highlight-code` | Mixin applied to the `<pre>` element | `{}`\n`--error-color` | Color of the error message when script error ocurred in the worker | ``",
+      "description": "Syntax highlighting via Prism\n\n### Example\n\n```html\n<prism-highlight id=\"c1\" lang=\"markdown\"></prism-highlight>\n<script>\n  document.querySelector('#c1').code = '# Test highlight';\n&lt;/script>\n```\n\nThe `lang` attribute is required and the component will not start parsing data without it.\n\nChanging the `lang` and `code` properties together, do it in less than 10 ms.\nThe element is set to commit changes after this time period. Otherwise it may display\nold and new code due to the asynchronous nature of the code highlighter.\n\n## Changes in version 4\n\nThe component supports only few syntax highlighting by default. It won't\nload other languages at runtime.The component consumer has to download definition\nbefore highlighting the code.\n\nThe component no longer uses Web Workers.",
       "attributes": [
         {
           "name": "code",
-          "description": "A data to be highlighted and dispayed.",
+          "description": "A data to be highlighted and rendered.",
           "type": "string"
         },
         {
@@ -17,21 +17,20 @@
           "type": "string"
         },
         {
-          "name": "languages",
-          "description": "Adds languages outside of the core Prism languages.\n\nPrism includes a few languages in the core library:\n   - JavaScript\n   - Markup\n   - CSS\n   - C-Like\nUse this property to extend the core set with other Prism\ncomponents and custom languages.\n\nExample:\n   ```\n   <!-- with languages = {'custom': myCustomPrismLang}; -->\n   <!-- or languages = Prism.languages; -->\n   <prism-highlighter languages=\"[[languages]]\"></prism-highlighter>\n   ```",
-          "type": "!Object",
-          "default": "{}"
+          "name": "raw",
+          "description": "When set it ignores syntax highlighting and only renders the code.",
+          "type": "boolean"
         }
       ],
       "properties": [
         {
           "name": "styles",
-          "type": "CSSResult"
+          "type": "CSSResult[]"
         },
         {
           "name": "code",
           "attribute": "code",
-          "description": "A data to be highlighted and dispayed.",
+          "description": "A data to be highlighted and rendered.",
           "type": "string"
         },
         {
@@ -42,10 +41,13 @@
         },
         {
           "name": "languages",
-          "attribute": "languages",
-          "description": "Adds languages outside of the core Prism languages.\n\nPrism includes a few languages in the core library:\n   - JavaScript\n   - Markup\n   - CSS\n   - C-Like\nUse this property to extend the core set with other Prism\ncomponents and custom languages.\n\nExample:\n   ```\n   <!-- with languages = {'custom': myCustomPrismLang}; -->\n   <!-- or languages = Prism.languages; -->\n   <prism-highlighter languages=\"[[languages]]\"></prism-highlighter>\n   ```",
-          "type": "!Object",
-          "default": "{}"
+          "description": "Adds languages outside of the core Prism languages.\n\nPrism includes a few languages in the core library:\n   - JavaScript\n   - Markup\n   - CSS\n   - C-Like\nUse this property to extend the core set with other Prism\ncomponents and custom languages.\n\nExample:\n   ```\n   <!-- with languages = {'custom': myCustomPrismLang}; -->\n   <!-- or languages = Prism.languages; -->\n   <prism-highlighter languages=\"[[languages]]\"></prism-highlighter>\n   ```"
+        },
+        {
+          "name": "raw",
+          "attribute": "raw",
+          "description": "When set it ignores syntax highlighting and only renders the code.",
+          "type": "boolean"
         }
       ],
       "events": [
@@ -53,7 +55,7 @@
           "name": "url-change-action"
         },
         {
-          "name": "request-workspace-append"
+          "name": "prism-highlight-parsed"
         }
       ]
     }

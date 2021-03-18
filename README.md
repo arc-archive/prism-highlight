@@ -1,4 +1,4 @@
-# &lt;prism-highlight&gt;
+# prism-highlight
 
 Syntax highlighting with Prism JS library
 
@@ -72,7 +72,7 @@ class SampleElement extends PolymerElement {
 customElements.define('sample-element', SampleElement);
 ```
 
-### Development
+## Development
 
 ```sh
 git clone https://github.com/advanced-rest-client/prism-highlight
