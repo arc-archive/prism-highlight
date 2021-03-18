@@ -1,13 +1,10 @@
-[![Published on NPM](https://img.shields.io/npm/v/@advanced-rest-client/prism-highlight.svg)](https://www.npmjs.com/package/@advanced-rest-client/prism-highlight)
-
-[![Build Status](https://travis-ci.org/advanced-rest-client/prism-highlight.svg?branch=stage)](https://travis-ci.org/advanced-rest-client/prism-highlight)
-
-[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/advanced-rest-client/prism-highlight)
-
-## &lt;prism-highlight&gt;
+# prism-highlight
 
 Syntax highlighting with Prism JS library
 
+[![Published on NPM](https://img.shields.io/npm/v/@advanced-rest-client/prism-highlight.svg)](https://www.npmjs.com/package/@advanced-rest-client/prism-highlight)
+
+[![Tests and publishing](https://github.com/advanced-rest-client/prism-highlight/actions/workflows/deployment.yml/badge.svg)](https://github.com/advanced-rest-client/prism-highlight/actions/workflows/deployment.yml)
 
 ```html
 <prism-highlight id="c2" lang="javascript"></prism-highlight>
@@ -19,14 +16,11 @@ document.querySelector('#c2').code = 'function(param) {\n' +
 </script>
 ```
 
-### API components
-
-This components is a part of [API components ecosystem](https://elements.advancedrestclient.com/)
-
 ## Usage
 
 ### Installation
-```
+
+```sh
 npm install --save @advanced-rest-client/prism-highlight
 ```
 
@@ -78,7 +72,7 @@ class SampleElement extends PolymerElement {
 customElements.define('sample-element', SampleElement);
 ```
 
-### Development
+## Development
 
 ```sh
 git clone https://github.com/advanced-rest-client/prism-highlight
@@ -93,12 +87,13 @@ npm start
 ```
 
 ### Running the tests
+
 ```sh
 npm test
 ```
 
 ## Changes in version 4
 
--   The component supports only few syntax highlighting by default. It won't load other languages at runtime. The component consumer has to download definition before highlighting the code.
--   The component no longer uses Web Workers.
--   Replaced Polymer with LitElement
+- The component supports only few syntax highlighting by default. It won't load other languages at runtime. The component consumer has to download definition before highlighting the code.
+- The component no longer uses Web Workers.
+- Replaced Polymer with LitElement

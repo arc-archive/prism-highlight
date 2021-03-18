@@ -1,22 +1,41 @@
-import { fixture, assert, aTimeout } from '@open-wc/testing';
-import sinon from 'sinon/pkg/sinon-esm.js';
+import { fixture, assert, aTimeout, html } from '@open-wc/testing';
+import sinon from 'sinon';
+import { WorkspaceEventTypes } from '@advanced-rest-client/arc-events';
 import '../prism-highlight.js';
 
-describe('<prism-highlight>', () => {
+/** @typedef {import('..').PrismHighlightElement} PrismHighlightElement */
+
+describe('PrismHighlightElement', () => {
+  /**
+   * @return {Promise<PrismHighlightElement>} 
+   */
   async function markdownFixture() {
-    return await fixture(`<prism-highlight lang="markdown"></prism-highlight>`);
+    return fixture(html`<prism-highlight lang="markdown"></prism-highlight>`);
   }
 
   // async function jsonFixture() {
   //   return await fixture(`<prism-highlight lang="json"></prism-highlight>`);
   // }
 
+  /**
+   * @return {Promise<PrismHighlightElement>} 
+   */
   async function xmlFixture() {
-    return await fixture(`<prism-highlight lang="xml"></prism-highlight>`);
+    return fixture(html`<prism-highlight lang="xml"></prism-highlight>`);
   }
 
+  /**
+   * @return {Promise<PrismHighlightElement>} 
+   */
   async function fullFixture() {
-    return await fixture(`<prism-highlight lang="json" code='{"test": true}'></prism-highlight>`);
+    return fixture(html`<prism-highlight lang="json" code='{"test": true}'></prism-highlight>`);
+  }
+
+  /**
+   * @return {Promise<PrismHighlightElement>} 
+   */
+   async function rawFixture() {
+    return fixture(html`<prism-highlight raw lang="json" code='{"test": true}'></prism-highlight>`);
   }
 
   const CRLF = /\r\n/g;
@@ -62,7 +81,7 @@ describe('<prism-highlight>', () => {
       const element = await xmlFixture();
       const code = '<Person>true</Person>';
       element.code = code;
-      await aTimeout();
+      await aTimeout(0);
       const result = element._output.innerHTML.trim();
       let compare = '<span class="token tag"><span class="token tag">';
       compare += '<span class="token punctuation">&lt;</span>Person</span>';
@@ -75,7 +94,7 @@ describe('<prism-highlight>', () => {
 
     it('renders predefined json', async () => {
       const element = await fullFixture();
-      await aTimeout();
+      await aTimeout(0);
       const result = element._output.innerHTML.trim();
       const c =
         '<span class="token punctuation">{</span><span class="token property">"test"</span>' +
@@ -93,7 +112,7 @@ describe('<prism-highlight>', () => {
     before(async () => {
       markdown = await markdownFixture();
       markdown.code = code;
-      await aTimeout();
+      await aTimeout(0);
     });
 
     it('Dispatches url-change-action custom event', (done) => {
@@ -109,7 +128,7 @@ describe('<prism-highlight>', () => {
 
   describe('_dispatchChangeUrl()', () => {
     const url = 'test-url';
-    let element;
+    let element = /** @type PrismHighlightElement  */ (null);
     beforeEach(async () => {
       element = await markdownFixture();
     });
@@ -138,42 +157,28 @@ describe('<prism-highlight>', () => {
 
   describe('_dispatchNewRequest()', () => {
     const url = 'test-url';
-    let element;
+    let element = /** @type PrismHighlightElement  */ (null);
     beforeEach(async () => {
       element = await markdownFixture();
     });
 
-    it('Dispatches request-workspace-append event', () => {
+    it(`dispatches ${WorkspaceEventTypes.appendRequest} event`, () => {
       const spy = sinon.spy();
-      element.addEventListener('request-workspace-append', spy);
+      element.addEventListener(WorkspaceEventTypes.appendRequest, spy);
       element._dispatchNewRequest(url);
       assert.isTrue(spy.called);
     });
 
-    it('Request is set', () => {
+    it('sets the request object', () => {
       const spy = sinon.spy();
-      element.addEventListener('request-workspace-append', spy);
+      element.addEventListener(WorkspaceEventTypes.appendRequest, spy);
       element._dispatchNewRequest(url);
-      assert.deepEqual(spy.args[0][0].detail.request, { url });
-    });
-
-    it('Kind is set', () => {
-      const spy = sinon.spy();
-      element.addEventListener('request-workspace-append', spy);
-      element._dispatchNewRequest(url);
-      assert.equal(spy.args[0][0].detail.kind, 'ARC#Request');
-    });
-
-    it('Event bubbles', () => {
-      const spy = sinon.spy();
-      element.addEventListener('request-workspace-append', spy);
-      element._dispatchNewRequest(url);
-      assert.isTrue(spy.args[0][0].bubbles);
+      assert.deepEqual(spy.args[0][0].detail.request, { method: 'GET', url });
     });
   });
 
   describe('_detectLang()', () => {
-    let element;
+    let element = /** @type PrismHighlightElement  */ (null);
     beforeEach(async () => {
       element = await markdownFixture();
     });
@@ -199,14 +204,14 @@ describe('<prism-highlight>', () => {
     });
 
     ['js', 'esm', 'mj'].forEach((item) => {
-      it('Returns JS grammar for ' + item, () => {
+      it(`Returns JS grammar for ${  item}`, () => {
         const result = element._detectLang('{}', item);
         assert.isTrue(result === Prism.languages.javascript);
       });
     });
 
     ['c'].forEach((item) => {
-      it('Returns C grammar for ' + item, () => {
+      it(`Returns C grammar for ${  item}`, () => {
         const result = element._detectLang('{}', item);
         assert.isTrue(result === Prism.languages.clike);
       });
@@ -215,6 +220,25 @@ describe('<prism-highlight>', () => {
     it('Returns default grammar', () => {
       const result = element._detectLang('<html>', 'test');
       assert.isTrue(result === Prism.languages.markup);
+    });
+  });
+
+  describe('#raw', () => {
+    let element = /** @type PrismHighlightElement  */ (null);
+    beforeEach(async () => {
+      element = await rawFixture();
+    });
+
+    it('renders the code without highlighting', () => {
+      const pre = element.shadowRoot.querySelector('.raw-content');
+      assert.ok(pre)
+    });
+
+    it('renders back the highlighted document', async () => {
+      element.raw = false;
+      await aTimeout(0);
+      const pre = element.shadowRoot.querySelector('.parsed-content');
+      assert.ok(pre)
     });
   });
 });

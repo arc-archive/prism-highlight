@@ -1,7 +1,6 @@
 coverage/
 test/
 demo/
-CONTRIBUTING.md
-polymer.json
+tsconfig.json
+web-test-runner.config.mjs
 .*
-custom-elements.json
