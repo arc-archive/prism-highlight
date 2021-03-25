@@ -38,6 +38,13 @@ describe('PrismHighlightElement', () => {
     return fixture(html`<prism-highlight raw lang="json" code='{"test": true}'></prism-highlight>`);
   }
 
+  /**
+   * @return {Promise<PrismHighlightElement>}
+   */
+   async function codeFixture() {
+    return fixture(html`<prism-highlight code='007'></prism-highlight>`);
+  }
+
   const CRLF = /\r\n/g;
   function normalizeString(str) {
     return str.replace(CRLF, '\n');
@@ -100,6 +107,14 @@ describe('PrismHighlightElement', () => {
         '<span class="token punctuation">{</span><span class="token property">"test"</span>' +
         '<span class="token operator">:</span> <span class="token boolean">true</span>' +
         '<span class="token punctuation">}</span>';
+      assert.equal(result, c);
+    });
+
+    it('renders code with no language', async () => {
+      const element = await codeFixture();
+      await aTimeout(0);
+      const result = element._output.innerHTML.trim();
+      const c = '<span class="token number">007</span>' ;
       assert.equal(result, c);
     });
   });

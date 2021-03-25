@@ -223,7 +223,7 @@ export class PrismHighlightElement extends LitElement {
    */
   _highlight() {
     const { code, lang, raw } = this;
-    if (!code || !lang || raw) {
+    if ((!code && lang) || raw) {
       return;
     }
     this.reset();
