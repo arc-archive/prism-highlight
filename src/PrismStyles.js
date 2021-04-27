@@ -140,4 +140,8 @@ export default css`
   .token.entity {
     cursor: help;
   }
+  
+  .parsed-content {
+    display: table;
+  }
 `;
