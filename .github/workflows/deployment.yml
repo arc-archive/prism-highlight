@@ -9,13 +9,8 @@ on:
       - main
 jobs:
   test_linux:
-    name: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-20.04]
-        # os: [ubuntu-18.04, ubuntu-20.04]
-    runs-on: ${{ matrix.os }}
+    name: Ubuntu
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -55,6 +50,12 @@ jobs:
         with:
           node-version: '14.x'
           registry-url: 'https://registry.npmjs.org'
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - run: npm install
       - name: Read version from package.json
         uses: culshaw/read-package-node-version-actions@v1
@@ -69,10 +70,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ steps.package-node-version.outputs.version }}
+          release_name: v${{ steps.package-node-version.outputs.version }}
           body: |
             ${{ steps.Changelog.outputs.changelog }}
           draft: false
           prerelease: false
-      - run: npm publish
+      - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
